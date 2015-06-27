@@ -1,5 +1,5 @@
 package com.example.edwardahn.assistant;
-
+/*
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -7,105 +7,72 @@ import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MenuItem;*/
 
+/////////////////////////////////////////////////////////////////
 
-public class MainActivity extends AppCompatActivity {
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+
+/**
+ * This sample shows you how to use ActionBarCompat with a customized theme. It utilizes a split
+ * action bar when running on a device with a narrow display, and show three tabs.
+ *
+ * This Activity extends from {@link ActionBarActivity}, which provides all of the function
+ * necessary to display a compatible Action Bar on devices running Android v2.1+.
+ *
+ * The interesting bits of this sample start in the theme files
+ * ('res/values/styles.xml' and 'res/values-v14</styles.xml').
+ *
+ * Many of the drawables used in this sample were generated with the
+ * 'Android Action Bar Style Generator': http://jgilfelt.github.io/android-actionbarstylegenerator
+ */
+public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
-        // setup action bar for tabs
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setDisplayShowTitleEnabled(false);
+        // Set the Action Bar to use tabs for navigation
+        ActionBar ab = getSupportActionBar();
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        ActionBar.Tab tab = actionBar.newTab()
-                .setText("Time")
-                .setTabListener(new TabListener<TimeFragment>(
-                        this, "time", TimeFragment.class));
-        actionBar.addTab(tab);
-        actionBar.selectTab(tab);
-
-        tab = actionBar.newTab()
-                .setText("Echo")
-                .setTabListener(new TabListener<EchoFragment>(
-                        this, "echo", EchoFragment.class));
-        actionBar.addTab(tab);
-
-        tab = actionBar.newTab()
-                .setText("Query")
-                .setTabListener(new TabListener<QueryFragment>(
-                        this, "query", QueryFragment.class));
-        actionBar.addTab(tab);
+        // Add three tabs to the Action Bar for display
+        ab.addTab(ab.newTab().setText("Time").setTabListener(this));
+        ab.addTab(ab.newTab().setText("Echo").setTabListener(this));
+        ab.addTab(ab.newTab().setText("Query").setTabListener(this));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate menu from menu resource (res/menu/main)
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        return super.onCreateOptionsMenu(menu);
     }
 
+    // Implemented from ActionBar.TabListener
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // This is called when a tab is selected.
     }
 
+    // Implemented from ActionBar.TabListener
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // This is called when a previously selected tab is unselected.
+    }
 
-    public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
-        private Fragment mFragment;
-        private final Activity mActivity;
-        private final String mTag;
-        private final Class<T> mClass;
-
-        /** Constructor used each time a new tab is created.
-         * @param activity  The host Activity, used to instantiate the fragment
-         * @param tag  The identifier tag for the fragment
-         * @param clz  The fragment's Class, used to instantiate the fragment
-         */
-        public TabListener(Activity activity, String tag, Class<T> clz) {
-            mActivity = activity;
-            mTag = tag;
-            mClass = clz;
-        }
-
-    /* The following are each of the ActionBar.TabListener callbacks */
-
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            // Check if the fragment is already initialized
-            if (mFragment == null) {
-                // If not, instantiate and add it to the activity
-                mFragment = Fragment.instantiate(mActivity, mClass.getName());
-                ft.add(android.R.id.content, mFragment, mTag);
-            } else {
-                // If it exists, simply attach it in order to show it
-                ft.attach(mFragment);
-            }
-        }
-
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            if (mFragment != null) {
-                // Detach the fragment, because another one is being attached
-                ft.detach(mFragment);
-            }
-        }
-
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            // User selected the already selected tab. Usually do nothing.
-        }
+    // Implemented from ActionBar.TabListener
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // This is called when a previously selected tab is selected again.
     }
 }
+
+/////////////////////////////////////////////////////////////////
+
