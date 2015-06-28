@@ -1,6 +1,7 @@
 package com.example.edwardahn.assistant;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,31 +9,18 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.Window;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.widget.Toast;
 
-/*
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.Window;*/
 
-/**
- * This sample shows you how to use ActionBarCompat with a customized theme. It utilizes a split
- * action bar when running on a device with a narrow display, and show three tabs.
- *
- * This Activity extends from {@link ActionBarActivity}, which provides all of the function
- * necessary to display a compatible Action Bar on devices running Android v2.1+.
- *
- * The interesting bits of this sample start in the theme files
- * ('res/values/styles.xml' and 'res/values-v14</styles.xml').
- *
- * Many of the drawables used in this sample were generated with the
- * 'Android Action Bar Style Generator': http://jgilfelt.github.io/android-actionbarstylegenerator
- */
 public class MainActivity extends ActionBarActivity {
+
+    // Local Bluetooth adapter
+    private BluetoothAdapter mBluetoothAdapter = null;
+
+    // Intent request codes
+    private static final int REQUEST_ENABLE_BT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +39,19 @@ public class MainActivity extends ActionBarActivity {
                 new TabListener<EchoFragment>(this, "echo", EchoFragment.class)));
         ab.addTab(ab.newTab().setText("Query").setTabListener(
                 new TabListener<QueryFragment>(this, "query", QueryFragment.class)));
+
+        // Get local Bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        // Enable Bluetooth
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
     }
 
     @Override
