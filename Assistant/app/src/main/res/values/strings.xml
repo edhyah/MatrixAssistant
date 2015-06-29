@@ -19,4 +19,9 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
 
+    <!-- BluetoothService -->
+    <string name="title_connecting">connecting...</string>
+    <string name="title_connected_to">connected</string>
+    <string name="title_not_connected">not connected</string>
+
 </resources>
