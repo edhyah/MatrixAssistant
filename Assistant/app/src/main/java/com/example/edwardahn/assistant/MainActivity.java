@@ -63,12 +63,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //setupConnection();
-    }
-
     private void setupConnection() {
         Intent serverIntent = new Intent(this, DeviceListActivity.class);
         startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
