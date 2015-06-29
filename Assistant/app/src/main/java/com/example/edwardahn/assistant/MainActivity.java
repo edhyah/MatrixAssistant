@@ -1,11 +1,11 @@
 package com.example.edwardahn.assistant;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -28,8 +28,8 @@ public class MainActivity extends ActionBarActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_CONNECT_DEVICE = 2;
 
-    // Broadcast receiver to discover devices
-    private BroadcastReceiver mReceiver = null;
+    // Handles all Bluetooth connections
+    private BluetoothService mBluetoothService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,8 @@ public class MainActivity extends ActionBarActivity {
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        //mChatService.connect(device, secure);
+        mBluetoothService = new BluetoothService(this, mHandler);
+        mBluetoothService.connect(device);
     }
 
     @Override
@@ -132,6 +133,11 @@ public class MainActivity extends ActionBarActivity {
             // Do nothing
         }
     }
+
+    // Gets information back from BluetoothService
+    private final Handler mHandler = new Handler() {
+
+    };
 }
 
 
