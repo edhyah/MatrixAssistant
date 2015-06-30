@@ -1,9 +1,7 @@
 package com.example.edwardahn.assistant;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,7 +14,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 
@@ -102,6 +99,36 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mBluetoothService != null) {
+            mBluetoothService.stop();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (mBluetoothService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (mBluetoothService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth chat services
+                mBluetoothService.start();
+            }
+        }
+    }
+
+    private void setStatus(CharSequence subTitle) {
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null) return;
+        actionBar.setSubtitle(subTitle);
+    }
+
     private static class TabListener<T extends Fragment> implements ActionBar.TabListener {
         private Fragment mFragment;
         private final Activity mActivity;
@@ -143,13 +170,13 @@ public class MainActivity extends ActionBarActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            setStatus(R.string.title_connected_to);
+                            setStatus(getString(R.string.title_connected_to));
                             break;
                         case BluetoothService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
+                            setStatus(getString(R.string.title_connecting));
                             break;
                         case BluetoothService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
+                            setStatus(getString(R.string.title_not_connected));
                             break;
                     }
                     break;
@@ -168,11 +195,11 @@ public class MainActivity extends ActionBarActivity {
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     String mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
-                    Toast.makeText((Activity) MainActivity.getInstance(), "Connected to "
+                    Toast.makeText(getApplicationContext(), "Connected to "
                             + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_TOAST:
-                    Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
+                    Toast.makeText(getApplicationContext(), msg.getData().getString(Constants.TOAST),
                             Toast.LENGTH_SHORT).show();
                     break;
             }

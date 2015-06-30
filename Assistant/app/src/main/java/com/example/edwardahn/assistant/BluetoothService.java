@@ -98,6 +98,22 @@ public class BluetoothService {
         setState(STATE_CONNECTED);
     }
 
+    public synchronized void start() {
+        // Cancel any thread attempting to make a connection
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+
+        // Cancel any thread currently running a connection
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+
+        setState(STATE_NONE);
+    }
+
     public synchronized void stop() {
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -196,26 +212,27 @@ public class BluetoothService {
 
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
+        //private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
-            InputStream tmpIn = null;
+            //InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
             // Get the input and output streams, using temp objects because
             // member streams are final
             try {
-                tmpIn = socket.getInputStream();
+                //tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) { }
 
-            mmInStream = tmpIn;
+            //mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
 
         public void run() {
+            /*
             byte[] buffer = new byte[1024];  // buffer store for the stream
             int bytes; // bytes returned from read()
 
@@ -232,6 +249,7 @@ public class BluetoothService {
                     break;
                 }
             }
+            */
         }
 
         /* Call this from the main activity to send data to the remote device */
