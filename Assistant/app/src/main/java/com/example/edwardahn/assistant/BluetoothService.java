@@ -11,10 +11,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class BluetoothService {
@@ -142,6 +145,7 @@ public class BluetoothService {
 
     private void connectionFailed() {
         // Send a failure message back to the Activity
+        setState(STATE_NONE);
         Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TOAST, "Unable to connect device");
@@ -159,7 +163,7 @@ public class BluetoothService {
     }
 
     private class ConnectThread extends Thread {
-        private final BluetoothSocket mmSocket;
+        private BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
@@ -185,12 +189,22 @@ public class BluetoothService {
                 // until it succeeds or throws an exception
                 mmSocket.connect();
             } catch (IOException connectException) {
-                // Unable to connect; close the socket and get out
+                Log.e("", connectException.getMessage());
                 try {
-                    mmSocket.close();
-                } catch (IOException closeException) { }
-                connectionFailed();
-                return;
+                    Log.e("","trying fallback...");
+                    mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createInsecureRfcommSocket",
+                            new Class[] {int.class}).invoke(mmDevice,1);
+                    mmSocket.connect();
+                } catch (Exception e) {
+                    Log.e("", "Failed to connect");
+                    try {
+                        mmSocket.close();
+                    } catch (IOException e2) {
+                        Log.e("", "Unable to close socket");
+                    }
+                    connectionFailed();
+                    return;
+                }
             }
 
             // Reset the ConnectThread because we're done
