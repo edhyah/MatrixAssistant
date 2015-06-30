@@ -1,7 +1,10 @@
 package com.example.edwardahn.assistant;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -59,6 +62,10 @@ public class MainActivity extends ActionBarActivity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+
+        // Register for broadcasts on BluetoothAdapter state change
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
     private void setupConnection() {
@@ -105,6 +112,8 @@ public class MainActivity extends ActionBarActivity {
         if (mBluetoothService != null) {
             mBluetoothService.stop();
         }
+        // Unregister broadcast listeners
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -202,6 +211,24 @@ public class MainActivity extends ActionBarActivity {
                     Toast.makeText(getApplicationContext(), msg.getData().getString(Constants.TOAST),
                             Toast.LENGTH_SHORT).show();
                     break;
+            }
+        }
+    };
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        Intent enableBtIntent1 = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent1, REQUEST_ENABLE_BT);
+                        break;
+                }
             }
         }
     };
