@@ -10,6 +10,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_device_list">DeviceListActivity</string>
 
+    <!-- MainActivity -->
+    <string name="not_connected">You are not connected to a device</string>
+
     <!--  DeviceListActivity -->
     <string name="scanning">Scanning for devices...</string>
     <string name="select_device">Select a device to connect</string>

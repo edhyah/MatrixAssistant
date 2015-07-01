@@ -32,6 +32,9 @@ public class MainActivity extends ActionBarActivity {
     // Handles all Bluetooth connections
     private BluetoothService mBluetoothService = null;
 
+    // String buffer for outgoing messages
+    private StringBuffer mOutStringBuffer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
@@ -66,6 +69,9 @@ public class MainActivity extends ActionBarActivity {
         // Register for broadcasts on BluetoothAdapter state change
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
+
+        // Initialize the buffer for outgoing messages
+        mOutStringBuffer = new StringBuffer("");
     }
 
     private void setupConnection() {
@@ -129,6 +135,24 @@ public class MainActivity extends ActionBarActivity {
                 // Start the Bluetooth chat services
                 mBluetoothService.start();
             }
+        }
+    }
+
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
+            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            mBluetoothService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
         }
     }
 
