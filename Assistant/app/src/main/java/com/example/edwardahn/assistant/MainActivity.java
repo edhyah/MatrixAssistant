@@ -138,7 +138,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -160,6 +160,10 @@ public class MainActivity extends ActionBarActivity {
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) return;
         actionBar.setSubtitle(subTitle);
+    }
+
+    public boolean isConnected() {
+        return mBluetoothService.getState() == mBluetoothService.STATE_CONNECTED;
     }
 
     private static class TabListener<T extends Fragment> implements ActionBar.TabListener {

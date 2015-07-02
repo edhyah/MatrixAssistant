@@ -3,7 +3,7 @@
  * Copyright 2015 Edward Ahn.
  *
  */
- 
+ // TODO: ADD SYMBOLS @#$%^&*()-+=_[]{}\/"'<>,;~
 // Arduino Pins
 const int SER = 8;
 const int LATCH = 9;
@@ -68,9 +68,33 @@ const byte SYM_Z[] = {B11111000, B00001000, B00010000, B00100000, B01000000, \
   B10000000, B10000000, B11111000};
 const byte SYM_QUERY[] = {B01110000, B10001000, B10001000, B00010000, \
   B00100000, B00100000, 0, B00100000};
-const byte SYM_PER[] = {0, 0, 0, 0, 0, 0, 0, B01000000};
 const byte SYM_EXC[] = {B00100000, B00100000, B00100000, B00100000, \
   B00100000, B00100000, 0, B00100000};
+const byte SYM_DOL[] = {B01110000, B10101000, B10100000, B01110000, B00101000, \
+  B00101000, B10101000, B01110000};
+const byte SYM_AT[] = {B01110000, B10001000, B11111000, B11011000, B11111000, \
+  B10011000, B10001000, B01110000};
+const byte SYM_POUND[] = {B01010000, B01010000, B11111000, B01010000, \
+  B01010000, B11111000, B01010000, B01010000};
+const byte SYM_PRCNT[] = {0, 0, B11001000, B11010000, B00100000, \
+  B01011000, B10011000, 0};
+const byte SYM_CARET[] = {B00100000, B01010000, B10001000, 0, 0, 0, 0, 0};
+const byte SYM_AMP[] = {B01100000, B10010000, B10100000, B01000000, \
+  B10100000, B10010000, B10001000, B01110000};
+const byte SYM_AST[] = {B10101000, B01110000, B00100000, B01110000, \
+  B10101000, 0, 0, 0};
+const byte SYM_TILDE[] = {0, 0, 0, B01000000, B10101000, B00010000, 0, 0};
+const byte SYM_PLUS[] = {0, 0, B00100000, B00100000, B11111000, B00100000, \
+  B00100000, 0};
+const byte SYM_UNDSC[] = {0, 0, 0, 0, 0, 0, 0, B11111000};
+const byte SYM_SLASH[] = {0, B00001000, B00010000, B00100000, B01000000, \
+  B10000000, 0, 0};
+const byte SYM_BKSLASH[] = {0, B10000000, B01000000, B00100000, B00010000, \
+  B00001000, 0, 0};
+const byte SYM_LCARET[] = {0, B00010000, B00100000, B01000000, B00100000, \
+  B00010000, 0, 0};
+const byte SYM_RCARET[] = {0, B01000000, B00100000, B00010000, B00100000, \
+  B01000000, 0, 0};
 
 // Numbers and 4-Bit Width Symbols
 const int NUM_WIDTH = 4;
@@ -95,11 +119,33 @@ const byte SYM_8[] = {B11110000, B10010000, B10010000, B11110000, B10010000, \
 const byte SYM_9[] = {B11110000, B10010000, B10010000, B11110000, B00010000, \
   B00010000, B00010000, B11110000};
 const byte SYM_SPACE[] = {0, 0, 0, 0, 0, 0, 0, 0};
+const byte SYM_EQUAL[] = {0, 0, 0, B11110000, 0, B11110000, 0, 0};
+const byte SYM_MINUS[] = {0, 0, 0, B11110000, 0, 0, 0, 0};
+const byte SYM_LBRACE[] = {B00100000, B01000000, B01000000, B10000000, \
+  B01000000, B01000000, B01000000, B00100000};
+const byte SYM_RBRACE[] = {B01000000, B00100000, B00100000, B00010000, \
+  B00100000, B00100000, B00100000, B01000000};
+const byte SYM_APOST[] = {B01000000, B01000000, 0, 0, 0, 0, 0, 0};
+const byte SYM_QUOTE[] = {B01010000, B01010000, 0, 0, 0, 0, 0, 0};
 
 // Miscellaneous 2-Bit Width Symbols
 const int MISC_WIDTH = 2;
 const byte SYM_COLON[] = {0, B11000000, B11000000, 0, 0, B11000000, \
   B11000000, 0};
+const byte SYM_LPAREN[] = {B01000000, B10000000, B10000000, B10000000, \
+  B10000000, B10000000, B10000000, B01000000};
+const byte SYM_RPAREN[] = {B10000000, B01000000, B01000000, B01000000, \
+  B01000000, B01000000, B01000000, B10000000};
+const byte SYM_PER[] = {0, 0, 0, 0, 0, 0, 0, B10000000};
+const byte SYM_LBRACK[] = {B11000000, B10000000, B10000000, B10000000, \
+  B10000000, B10000000, B10000000, B11000000};
+const byte SYM_RBRACK[] = {B11000000, B01000000, B01000000, B01000000, \
+  B01000000, B01000000, B01000000, B11000000};
+const byte SYM_SEMICLN[] = {0, 0, B11000000, B11000000, 0, B00000000, \
+  B11000000, B01000000};
+const byte SYM_COMMA[] = {0, 0, 0, 0, 0, 0, B11000000, B01000000};
+const byte SYM_PIPE[] = {0, B01000000, B01000000, B01000000, \
+  B01000000, B01000000, B01000000, 0};
 
 // Sets all elements in data to 0
 void clearDataArray(int *data) {
@@ -280,11 +326,50 @@ void getData(String text, int *data, int row, int shift) {
       case '?':
         pushAlpha(SYM_QUERY[row], data, &count, &reg);
         break;
-      case '.':
-        pushAlpha(SYM_PER[row], data, &count, &reg);
-        break;
       case '!':
         pushAlpha(SYM_EXC[row], data, &count, &reg);
+        break;
+      case '$':
+        pushAlpha(SYM_DOL[row], data, &count, &reg);
+        break;
+      case '@':
+        pushAlpha(SYM_AT[row], data, &count, &reg);
+        break;
+      case '#':
+        pushAlpha(SYM_POUND[row], data, &count, &reg);
+        break;
+      case '%':
+        pushAlpha(SYM_PRCNT[row], data, &count, &reg);
+        break;
+      case '^':
+        pushAlpha(SYM_CARET[row], data, &count, &reg);
+        break;
+      case '&':
+        pushAlpha(SYM_AMP[row], data, &count, &reg);
+        break;
+      case '*':
+        pushAlpha(SYM_AST[row], data, &count, &reg);
+        break;
+      case '~':
+        pushAlpha(SYM_TILDE[row], data, &count, &reg);
+        break;
+      case '+':
+        pushAlpha(SYM_PLUS[row], data, &count, &reg);
+        break;
+      case '_':
+        pushAlpha(SYM_UNDSC[row], data, &count, &reg);
+        break;
+      case '/':
+        pushAlpha(SYM_SLASH[row], data, &count, &reg);
+        break;
+      case '\\':
+        pushAlpha(SYM_BKSLASH[row], data, &count, &reg);
+        break;
+      case '<':
+        pushAlpha(SYM_LCARET[row], data, &count, &reg);
+        break;
+      case '>':
+        pushAlpha(SYM_RCARET[row], data, &count, &reg);
         break;
       case '0':
         pushNum(SYM_0[row], data, &count, &reg);
@@ -319,8 +404,53 @@ void getData(String text, int *data, int row, int shift) {
       case ' ':
         pushNum(SYM_SPACE[row], data, &count, &reg);
         break;
+      case '=':
+        pushNum(SYM_EQUAL[row], data, &count, &reg);
+        break;
+      case '-':
+        pushNum(SYM_MINUS[row], data, &count, &reg);
+        break;
+      case '{':
+        pushNum(SYM_LBRACE[row], data, &count, &reg);
+        break;
+      case '}':
+        pushNum(SYM_RBRACE[row], data, &count, &reg);
+        break;
+      case '\'':
+        pushNum(SYM_APOST[row], data, &count, &reg);
+        break;
+      case '"':
+        pushNum(SYM_QUOTE[row], data, &count, &reg);
+        break;
       case ':':
         pushMisc(SYM_COLON[row], data, &count, &reg);
+        break;
+      case '(':
+        pushMisc(SYM_LPAREN[row], data, &count, &reg);
+        break;
+      case ')':
+        pushMisc(SYM_RPAREN[row], data, &count, &reg);
+        break;
+      case '.':
+        pushMisc(SYM_PER[row], data, &count, &reg);
+        break;
+      case '[':
+        pushMisc(SYM_LBRACK[row], data, &count, &reg);
+        break;
+      case ']':
+        pushMisc(SYM_RBRACK[row], data, &count, &reg);
+        break;
+      case ';':
+        pushMisc(SYM_SEMICLN[row], data, &count, &reg);
+        break;
+      case ',':
+        pushMisc(SYM_COMMA[row], data, &count, &reg);
+        break;
+      case '|':
+        pushMisc(SYM_PIPE[row], data, &count, &reg);
+        break;
+      default:
+        pushNum(SYM_SPACE[row], data, &count, &reg);
         break;
     }
   }
@@ -367,9 +497,11 @@ void setup() {
 
 // Arduino-required loop function
 void loop() {
-  String text = "";
+  String text = "done";
+  /*
   while (Serial.available() > 0) {
     text += char(Serial.read());
   }
-  displayText(text, true);
+  */
+  displayText(text, false);
 }

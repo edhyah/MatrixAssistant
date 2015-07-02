@@ -27,4 +27,7 @@
     <string name="title_connected_to">connected</string>
     <string name="title_not_connected">not connected</string>
 
+    <!-- Fragments -->
+    <string name="send">Send</string>
+
 </resources>

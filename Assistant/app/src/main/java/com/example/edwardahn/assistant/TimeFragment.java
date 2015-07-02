@@ -1,5 +1,6 @@
 package com.example.edwardahn.assistant;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,11 +22,18 @@ public class TimeFragment extends Fragment {
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
     private BroadcastReceiver mReceiver = null;
     private TextView mTextView;
+    private Activity mActivity = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return (LinearLayout) inflater.inflate(R.layout.fragment_time, container, false);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
     @Override
@@ -44,6 +51,10 @@ public class TimeFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
                     mTextView.setText(time.format(new Date()));
+                    //if (mActivity != null && ((MainActivity) getActivity()).isConnected()) {
+                    if (mActivity != null && ((MainActivity) mActivity).isConnected()) {
+                        ((MainActivity) getActivity()).sendMessage(time.format(new Date()));
+                    }
                 }
             }
         };
