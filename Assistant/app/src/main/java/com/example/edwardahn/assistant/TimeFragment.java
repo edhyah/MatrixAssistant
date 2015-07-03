@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.Date;
 
 public class TimeFragment extends Fragment {
 
+    private static final String TAG = "Time_Fragment";
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
     private BroadcastReceiver mReceiver = null;
     private TextView mTextView;
@@ -40,7 +42,10 @@ public class TimeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mTextView = (TextView) getView().findViewById(R.id.view_time);
-        mTextView.setText(time.format(new Date()));
+        String currentTime = time.format(new Date());
+        if (currentTime.charAt(0) == '0')
+            currentTime = ' ' + currentTime.substring(1);
+        mTextView.setText(currentTime);
     }
 
     @Override
@@ -51,9 +56,12 @@ public class TimeFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
                     mTextView.setText(time.format(new Date()));
-                    //if (mActivity != null && ((MainActivity) getActivity()).isConnected()) {
+                    //TODO: send message after connection is done
                     if (mActivity != null && ((MainActivity) mActivity).isConnected()) {
-                        ((MainActivity) getActivity()).sendMessage(time.format(new Date()));
+                        String currentTime = time.format(new Date());
+                        if (currentTime.charAt(0) == '0')
+                            currentTime = ' ' + currentTime.substring(1);
+                        ((MainActivity) getActivity()).sendMessage(currentTime);
                     }
                 }
             }

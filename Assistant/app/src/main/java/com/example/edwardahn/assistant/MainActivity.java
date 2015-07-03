@@ -19,6 +19,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -94,6 +97,13 @@ public class MainActivity extends ActionBarActivity {
         // Attempt to connect to the device
         mBluetoothService = new BluetoothService(this, mHandler);
         mBluetoothService.connect(device);
+        if (isConnected()) {
+            TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag("Time_Fragment");
+            if (myFragment != null && myFragment.isVisible()) {
+                SimpleDateFormat time = new SimpleDateFormat("hh:mm");
+                sendMessage(time.format(new Date()));
+            }
+        }
     }
 
     @Override

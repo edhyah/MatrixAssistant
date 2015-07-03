@@ -3,7 +3,10 @@
  * Copyright 2015 Edward Ahn.
  *
  */
- // TODO: ADD SYMBOLS @#$%^&*()-+=_[]{}\/"'<>,;~
+
+// Text that will be displayed
+String text = "";
+
 // Arduino Pins
 const int SER = 8;
 const int LATCH = 9;
@@ -497,11 +500,10 @@ void setup() {
 
 // Arduino-required loop function
 void loop() {
-  String text = "done";
-  /*
+  String str = "";
   while (Serial.available() > 0) {
-    text += char(Serial.read());
+    str += char(Serial.read());
   }
-  */
+  if (!str.equals("")) text = str;
   displayText(text, false);
 }
