@@ -481,7 +481,8 @@ void displayText(String text, boolean scrollIsOn) {
   if (!scrollIsOn) drawText(text, 23);
   else {
     unsigned long time;
-    int timeDelay = 35;
+    //int timeDelay = 35;
+    int timeDelay = 20;
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
       time = millis();
@@ -505,5 +506,5 @@ void loop() {
     str += char(Serial.read());
   }
   if (!str.equals("")) text = str;
-  displayText(text, false);
+  displayText(text, true);
 }
