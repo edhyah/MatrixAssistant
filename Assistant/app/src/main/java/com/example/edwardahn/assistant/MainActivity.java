@@ -102,16 +102,7 @@ public class MainActivity extends ActionBarActivity {
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         mBluetoothService = new BluetoothService(this, mHandler);
-        Log.i("", "about to connect");
         mBluetoothService.connect(device);
-        if (isConnected()) {
-            Log.i("", "Connected and displaying time now");
-            TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag("Time_Fragment");
-            if (myFragment != null && myFragment.isVisible()) {
-                SimpleDateFormat time = new SimpleDateFormat("hh:mm");
-                sendMessage(time.format(new Date()));
-            }
-        }
     }
 
     @Override
@@ -185,11 +176,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public int getCurrentFragment() {
-        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof TimeFragment) return CURRENT_TIME;
-        else if (currentFragment instanceof EchoFragment) return CURRENT_ECHO;
-        else if (currentFragment instanceof QueryFragment) return CURRENT_QUERY;
-        else return -1;
+
+        if ("".equals("Time")) return CURRENT_TIME;
+
+        EchoFragment eFragment = (EchoFragment)getSupportFragmentManager().findFragmentByTag(
+                "Echo_Fragment");
+        if (eFragment != null) return CURRENT_ECHO;
+
+        QueryFragment qFragment = (QueryFragment)getSupportFragmentManager().findFragmentByTag(
+                "Query_Fragment");
+        if (qFragment != null) return CURRENT_QUERY;
+
+        return -1;
     }
 
     private static class TabListener<T extends Fragment> implements ActionBar.TabListener {
@@ -243,25 +241,16 @@ public class MainActivity extends ActionBarActivity {
                     }
                     break;
                 case Constants.MESSAGE_WRITE:
-                    Log.i("","message written to LEDs");
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    Log.i("", "message is :" + writeMessage);
                     int currentFragment = getCurrentFragment();
+                    Log.i("","written to time fragment");
+                    Log.i("", "current fragment: " + currentFragment);
                     if (currentFragment == CURRENT_TIME) {
-                        Log.i("", "message written in time fragment");
-                        if (writeMessage.length() < 12) {
-                            Log.i("", "something went wrong #1");
-                            TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
-                                    "Time_Fragment");
-                            if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();
-                        }
-                        String labelFront = writeMessage.substring(0,6);
-                        String labelBack = writeMessage.substring(writeMessage.length()-6);
-                        if (!labelFront.equals(TimeFragment.label)
-                                || !labelBack.equals(TimeFragment.label)) {
-                            Log.i("", "something went wrong #1");
+                        Log.i("","message written");
+                        if (writeMessage.equals("NULL")) {
+                            Log.i("","something went wrong");
                             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
                                     "Time_Fragment");
                             if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();

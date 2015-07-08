@@ -9,6 +9,9 @@ import android.widget.LinearLayout;
 
 
 public class QueryFragment extends Fragment {
+
+    private static final String TAG = "Query_Fragment";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

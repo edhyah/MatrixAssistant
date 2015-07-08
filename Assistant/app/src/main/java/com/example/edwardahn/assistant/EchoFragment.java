@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 public class EchoFragment extends Fragment {
 
+    private static final String TAG = "Echo_Fragment";
     private Activity mActivity = null;
 
     @Override

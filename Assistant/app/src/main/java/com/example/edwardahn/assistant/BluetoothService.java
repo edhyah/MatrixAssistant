@@ -98,13 +98,7 @@ public class BluetoothService {
 
         setState(STATE_CONNECTED);
 
-        /*
-        // Send time
-        Message msgTime = mHandler.obtainMessage(Constants.MESSAGE_WRITE);
-        Bundle bundleTime = new Bundle();
-        bundleTime.putString("NULL", "NULL");
-        msgTime.setData(bundleTime);
-        mHandler.sendMessage(msgTime);*/
+        write("NULL".getBytes());
     }
 
     public synchronized void start() {
