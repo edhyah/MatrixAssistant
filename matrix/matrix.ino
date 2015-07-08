@@ -504,6 +504,7 @@ void loop() {
   String str = "";
   while (Serial.available() > 0) {
     str += char(Serial.read());
+    delay(5);
   }
   if (!str.equals("")) text = str.substring(6,str.length()-6);
   displayText(text, false);

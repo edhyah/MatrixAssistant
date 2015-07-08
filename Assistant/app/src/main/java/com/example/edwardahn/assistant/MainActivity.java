@@ -104,7 +104,6 @@ public class MainActivity extends ActionBarActivity {
         mBluetoothService = new BluetoothService(this, mHandler);
         Log.i("", "about to connect");
         mBluetoothService.connect(device);
-        Log.i("","connection is established");
         if (isConnected()) {
             Log.i("", "Connected and displaying time now");
             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag("Time_Fragment");
@@ -248,9 +247,12 @@ public class MainActivity extends ActionBarActivity {
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
+                    Log.i("", "message is :" + writeMessage);
                     int currentFragment = getCurrentFragment();
                     if (currentFragment == CURRENT_TIME) {
+                        Log.i("", "message written in time fragment");
                         if (writeMessage.length() < 12) {
+                            Log.i("", "something went wrong #1");
                             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
                                     "Time_Fragment");
                             if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();
@@ -259,6 +261,7 @@ public class MainActivity extends ActionBarActivity {
                         String labelBack = writeMessage.substring(writeMessage.length()-6);
                         if (!labelFront.equals(TimeFragment.label)
                                 || !labelBack.equals(TimeFragment.label)) {
+                            Log.i("", "something went wrong #1");
                             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
                                     "Time_Fragment");
                             if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();
