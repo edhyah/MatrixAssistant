@@ -505,6 +505,6 @@ void loop() {
   while (Serial.available() > 0) {
     str += char(Serial.read());
   }
-  if (!str.equals("")) text = str;
-  displayText(text, true);
+  if (!str.equals("")) text = str.substring(6,str.length()-6);
+  displayText(text, false);
 }

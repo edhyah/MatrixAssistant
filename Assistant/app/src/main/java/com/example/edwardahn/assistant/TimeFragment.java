@@ -26,6 +26,8 @@ public class TimeFragment extends Fragment {
     private TextView mTextView;
     private Activity mActivity = null;
 
+    public static final String label = "_TIME_";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,12 +63,21 @@ public class TimeFragment extends Fragment {
                         String currentTime = time.format(new Date());
                         if (currentTime.charAt(0) == '0')
                             currentTime = ' ' + currentTime.substring(1);
-                        ((MainActivity) getActivity()).sendMessage(currentTime);
+                        ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
                     }
                 }
             }
         };
         getActivity().registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+    }
+
+    public void sendTime() {
+        if (mActivity != null && ((MainActivity) mActivity).isConnected()) {
+            String currentTime = time.format(new Date());
+            if (currentTime.charAt(0) == '0')
+                currentTime = ' ' + currentTime.substring(1);
+            ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
+        }
     }
 
     @Override

@@ -97,6 +97,14 @@ public class BluetoothService {
         mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
+
+        /*
+        // Send time
+        Message msgTime = mHandler.obtainMessage(Constants.MESSAGE_WRITE);
+        Bundle bundleTime = new Bundle();
+        bundleTime.putString("NULL", "NULL");
+        msgTime.setData(bundleTime);
+        mHandler.sendMessage(msgTime);*/
     }
 
     public synchronized void start() {
@@ -264,9 +272,12 @@ public class BluetoothService {
         }
 
         /* Call this from the main activity to send data to the remote device */
-        public void write(byte[] bytes) {
+        public void write(byte[] buffer) {
             try {
-                mmOutStream.write(bytes);
+                mmOutStream.write(buffer);
+                // Share the sent message back to the UI Activity
+                mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
+                        .sendToTarget();
             } catch (IOException e) { }
         }
 

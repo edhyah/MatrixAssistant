@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -37,6 +38,11 @@ public class MainActivity extends ActionBarActivity {
 
     // String buffer for outgoing messages
     private StringBuffer mOutStringBuffer;
+
+    // Current fragment codes
+    private static final int CURRENT_TIME = 0;
+    private static final int CURRENT_ECHO = 1;
+    private static final int CURRENT_QUERY = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +102,11 @@ public class MainActivity extends ActionBarActivity {
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         mBluetoothService = new BluetoothService(this, mHandler);
+        Log.i("", "about to connect");
         mBluetoothService.connect(device);
+        Log.i("","connection is established");
         if (isConnected()) {
+            Log.i("", "Connected and displaying time now");
             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag("Time_Fragment");
             if (myFragment != null && myFragment.isVisible()) {
                 SimpleDateFormat time = new SimpleDateFormat("hh:mm");
@@ -176,6 +185,14 @@ public class MainActivity extends ActionBarActivity {
         return mBluetoothService.getState() == mBluetoothService.STATE_CONNECTED;
     }
 
+    public int getCurrentFragment() {
+        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (currentFragment instanceof TimeFragment) return CURRENT_TIME;
+        else if (currentFragment instanceof EchoFragment) return CURRENT_ECHO;
+        else if (currentFragment instanceof QueryFragment) return CURRENT_QUERY;
+        else return -1;
+    }
+
     private static class TabListener<T extends Fragment> implements ActionBar.TabListener {
         private Fragment mFragment;
         private final Activity mActivity;
@@ -191,7 +208,6 @@ public class MainActivity extends ActionBarActivity {
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
             if (mFragment == null) {
                 mFragment = Fragment.instantiate(mActivity, mClass.getName());
-                // ft.replace ?
                 ft.add(android.R.id.content, mFragment, mTag);
             } else {
                 ft.attach(mFragment);
@@ -228,9 +244,26 @@ public class MainActivity extends ActionBarActivity {
                     }
                     break;
                 case Constants.MESSAGE_WRITE:
+                    Log.i("","message written to LEDs");
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
+                    int currentFragment = getCurrentFragment();
+                    if (currentFragment == CURRENT_TIME) {
+                        if (writeMessage.length() < 12) {
+                            TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
+                                    "Time_Fragment");
+                            if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();
+                        }
+                        String labelFront = writeMessage.substring(0,6);
+                        String labelBack = writeMessage.substring(writeMessage.length()-6);
+                        if (!labelFront.equals(TimeFragment.label)
+                                || !labelBack.equals(TimeFragment.label)) {
+                            TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
+                                    "Time_Fragment");
+                            if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();
+                        }
+                    }
                     // Do something with writeMessage here
                     break;
                 case Constants.MESSAGE_READ:
