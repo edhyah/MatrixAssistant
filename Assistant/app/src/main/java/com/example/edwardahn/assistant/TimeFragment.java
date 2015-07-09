@@ -59,12 +59,18 @@ public class TimeFragment extends Fragment {
                 if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
                     mTextView.setText(time.format(new Date()));
                     //TODO: send message after connection is done
+                    /*
                     if (mActivity != null && ((MainActivity) mActivity).isConnected()) {
                         String currentTime = time.format(new Date());
                         if (currentTime.charAt(0) == '0')
                             currentTime = ' ' + currentTime.substring(1);
                         ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
                     }
+                    */
+                    String currentTime = time.format(new Date());
+                    if (currentTime.charAt(0) == '0')
+                        currentTime = ' ' + currentTime.substring(1);
+                    ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
                 }
             }
         };
@@ -72,12 +78,18 @@ public class TimeFragment extends Fragment {
     }
 
     public void sendTime() {
+        /*
         if (mActivity != null && ((MainActivity) mActivity).isConnected()) {
             String currentTime = time.format(new Date());
             if (currentTime.charAt(0) == '0')
                 currentTime = ' ' + currentTime.substring(1);
             ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
         }
+        */
+        String currentTime = time.format(new Date());
+        if (currentTime.charAt(0) == '0')
+            currentTime = ' ' + currentTime.substring(1);
+        ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
     }
 
     @Override

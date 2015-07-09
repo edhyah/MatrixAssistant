@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity {
     private static final int CURRENT_TIME = 0;
     private static final int CURRENT_ECHO = 1;
     private static final int CURRENT_QUERY = 2;
+    private static int currentFragment = CURRENT_TIME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,18 +177,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public int getCurrentFragment() {
-
-        if ("".equals("Time")) return CURRENT_TIME;
-
-        EchoFragment eFragment = (EchoFragment)getSupportFragmentManager().findFragmentByTag(
-                "Echo_Fragment");
-        if (eFragment != null) return CURRENT_ECHO;
-
-        QueryFragment qFragment = (QueryFragment)getSupportFragmentManager().findFragmentByTag(
-                "Query_Fragment");
-        if (qFragment != null) return CURRENT_QUERY;
-
-        return -1;
+        return currentFragment;
     }
 
     private static class TabListener<T extends Fragment> implements ActionBar.TabListener {
@@ -209,6 +199,10 @@ public class MainActivity extends ActionBarActivity {
             } else {
                 ft.attach(mFragment);
             }
+            if (mTag.equals("time")) currentFragment = CURRENT_TIME;
+            else if (mTag.equals("echo")) currentFragment = CURRENT_ECHO;
+            else if (mTag.equals("query")) currentFragment = CURRENT_QUERY;
+            else currentFragment = -1;
         }
 
         public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -249,11 +243,14 @@ public class MainActivity extends ActionBarActivity {
                     Log.i("", "current fragment: " + currentFragment);
                     if (currentFragment == CURRENT_TIME) {
                         Log.i("","message written");
-                        if (writeMessage.equals("NULL")) {
+                        if (writeMessage.equals("/NULL/")) {
                             Log.i("","something went wrong");
                             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
-                                    "Time_Fragment");
-                            if (myFragment != null && myFragment.isVisible()) myFragment.sendTime();
+                                    "time");
+                            if (myFragment != null) {
+                                myFragment.sendTime();
+                                Log.i("","sent time again");
+                            }
                         }
                     }
                     // Do something with writeMessage here

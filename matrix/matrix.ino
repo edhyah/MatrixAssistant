@@ -511,6 +511,9 @@ void loop() {
       if (count != 4) delay(2);
     }
   }
+  if (str.length() >= 6 && str.substring(0,6) == "/NULL/") {
+    str = str.substring(6);
+  }
   if (!str.equals("")) text = str.substring(6,str.length()-6);
   displayText(text, false);
 }
