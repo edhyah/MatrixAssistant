@@ -149,6 +149,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void sendMessage(String message) {
+        if (mBluetoothService == null) return;
+
         // Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();

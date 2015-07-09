@@ -66,15 +66,17 @@ public class TimeFragment extends Fragment {
                             currentTime = ' ' + currentTime.substring(1);
                         ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
                     }
-                    */
+
                     String currentTime = time.format(new Date());
                     if (currentTime.charAt(0) == '0')
                         currentTime = ' ' + currentTime.substring(1);
-                    ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
+                    ((MainActivity) getActivity()).sendMessage(label+currentTime+label);*/
+                    sendTime();
                 }
             }
         };
         getActivity().registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        if ((MainActivity) getActivity() != null) sendTime();
     }
 
     public void sendTime() {
