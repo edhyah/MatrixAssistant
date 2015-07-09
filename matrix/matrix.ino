@@ -6,6 +6,14 @@
 
 // Text that will be displayed
 String text = "";
+String label = "";
+
+// Codes
+const String NULLS = "/NULL/";
+const String TIME = "_TIME_";
+const String ECHO = "_ECHO_";
+const String QUERY = "_QUER_";
+const int CODE_LEN = 6;
 
 // Arduino Pins
 const int SER = 8;
@@ -502,18 +510,32 @@ void setup() {
 // Arduino-required loop function
 void loop() {
   String str = "";
+  
+  // read data
   while (Serial.available() > 0) {
     str += char(Serial.read());
     if (Serial.available() == 0) {
       String temp = str;
-      temp.replace("_","");
+      temp.replace("_", "");
       int count = str.length() - temp.length();
       if (count != 4) delay(2);
     }
   }
-  if (str.length() >= 6 && str.substring(0,6) == "/NULL/") {
-    str = str.substring(6);
+  
+  // remove null string
+  if (str.length() >= CODE_LEN
+    && str.substring(0, CODE_LEN) == NULLS) {
+    str = str.substring(CODE_LEN);
   }
-  if (!str.equals("")) text = str.substring(6,str.length()-6);
-  displayText(text, false);
+  
+  // change text if necessary
+  if (!str.equals("") && str.length() > 2*CODE_LEN) {
+    label = str.substring(0, CODE_LEN);
+    text = str.substring(CODE_LEN, str.length()-CODE_LEN);
+  }
+  
+  // display text
+  if (label.equals(TIME)) displayText(text, false);
+  else if (label.equals(ECHO)) displayText(text, true);
+  else if (label.equals(QUERY)) return;
 }

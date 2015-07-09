@@ -235,15 +235,19 @@ public class MainActivity extends ActionBarActivity {
                     String writeMessage = new String(writeBuf);
                     int currentFragment = getCurrentFragment();
                     if (currentFragment == CURRENT_TIME) {
-                        if (writeMessage.equals("/NULL/")) {
+                        if (writeMessage.equals(Constants.NULLS)) {
                             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
                                     "time");
                             if (myFragment != null) {
                                 myFragment.sendTime();
                             }
                         }
+                    } else if (currentFragment == CURRENT_ECHO) {
+                        EchoFragment myFragment = (EchoFragment)getSupportFragmentManager().findFragmentByTag(
+                                "echo");
+                        myFragment.mConversationArrayAdapter.add(writeMessage.substring(
+                                Constants.CODE_LEN, writeMessage.length()-Constants.CODE_LEN));
                     }
-                    // Do something with writeMessage here
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;

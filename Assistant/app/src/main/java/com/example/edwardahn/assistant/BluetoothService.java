@@ -98,7 +98,7 @@ public class BluetoothService {
 
         setState(STATE_CONNECTED);
 
-        write("/NULL/".getBytes());
+        write(Constants.NULLS.getBytes());
     }
 
     public synchronized void start() {

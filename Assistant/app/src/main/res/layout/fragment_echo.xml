@@ -1,14 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.edwardahn.assistant.EchoFragment">
-
-    <!--
-    <TextView
-        android:id="@+id/view_echo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello by echo" /> -->
+    tools:context="com.example.edwardahn.assistant.EchoFragment"
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/in"

@@ -1,13 +1,11 @@
 package com.example.edwardahn.assistant;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +21,13 @@ public class TimeFragment extends Fragment {
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
     private BroadcastReceiver mReceiver = null;
     private TextView mTextView;
-    private Activity mActivity = null;
 
-    public static final String label = "_TIME_";
+    public static final String label = Constants.TIMES;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return (LinearLayout) inflater.inflate(R.layout.fragment_time, container, false);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = activity;
     }
 
     @Override
