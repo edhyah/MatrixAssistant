@@ -20,9 +20,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -174,10 +171,6 @@ public class MainActivity extends ActionBarActivity {
         actionBar.setSubtitle(subTitle);
     }
 
-    public boolean isConnected() {
-        return mBluetoothService.getState() == mBluetoothService.STATE_CONNECTED;
-    }
-
     public int getCurrentFragment() {
         return currentFragment;
     }
@@ -241,17 +234,12 @@ public class MainActivity extends ActionBarActivity {
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
                     int currentFragment = getCurrentFragment();
-                    Log.i("","written to time fragment");
-                    Log.i("", "current fragment: " + currentFragment);
                     if (currentFragment == CURRENT_TIME) {
-                        Log.i("","message written");
                         if (writeMessage.equals("/NULL/")) {
-                            Log.i("","something went wrong");
                             TimeFragment myFragment = (TimeFragment)getSupportFragmentManager().findFragmentByTag(
                                     "time");
                             if (myFragment != null) {
                                 myFragment.sendTime();
-                                Log.i("","sent time again");
                             }
                         }
                     }
