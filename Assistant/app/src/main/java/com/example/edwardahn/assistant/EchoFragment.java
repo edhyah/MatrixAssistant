@@ -1,8 +1,11 @@
 package com.example.edwardahn.assistant;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +14,21 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
-public class EchoFragment extends Fragment {
+public class EchoFragment extends Fragment implements View.OnClickListener {
 
     public static final String label = "_ECHO_";
+
+    ImageButton mButton;
+    protected static final int REQUEST_OK = 5;
 
     // Layout views
     private ListView mConversationView;
@@ -32,7 +42,32 @@ public class EchoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return (LinearLayout) inflater.inflate(R.layout.fragment_echo, container, false);
+        View view = (LinearLayout) inflater.inflate(R.layout.fragment_echo, container, false);
+        mButton = (ImageButton) view.findViewById(R.id.button_voice);
+        mButton.setOnClickListener(this);
+        return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
+        try {
+            startActivityForResult(i, REQUEST_OK);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error initializing speech to text engine.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("", "result received prelim");
+        if (requestCode == REQUEST_OK) {
+            Log.i("", "result was received");
+            ArrayList<String> thingsYouSaid = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            ((TextView) getView().findViewById(R.id.edit_text_out)).setText(thingsYouSaid.get(0));
+        }
     }
 
     @Override
@@ -62,6 +97,8 @@ public class EchoFragment extends Fragment {
                 if (null != view) {
                     TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
                     String message = textView.getText().toString();
+                    if (message.equals("")) return;
+                    textView.setText("");
                     ((MainActivity) getActivity()).sendMessage(label+message+label);
                 }
             }
