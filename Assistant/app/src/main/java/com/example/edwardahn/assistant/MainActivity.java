@@ -87,6 +87,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CONNECT_DEVICE && resultCode == Activity.RESULT_OK) {
             connectDevice(data);
         }
