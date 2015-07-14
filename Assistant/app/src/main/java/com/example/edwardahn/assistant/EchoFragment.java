@@ -62,9 +62,8 @@ public class EchoFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("", "result received prelim");
         if (requestCode == REQUEST_OK) {
-            Log.i("", "result was received");
+            if (data == null) return;
             ArrayList<String> thingsYouSaid = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             ((TextView) getView().findViewById(R.id.edit_text_out)).setText(thingsYouSaid.get(0));
         }
