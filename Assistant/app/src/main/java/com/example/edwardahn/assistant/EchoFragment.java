@@ -33,7 +33,7 @@ public class EchoFragment extends Fragment implements View.OnClickListener {
     // Layout views
     private ListView mConversationView;
     private EditText mOutEditText;
-    private Button mSendButton;
+    private ImageButton mSendButton;
 
     // Array adapter for conversation thread
     public ArrayAdapter<String> mConversationArrayAdapter;
@@ -73,7 +73,7 @@ public class EchoFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mConversationView = (ListView) view.findViewById(R.id.in);
         mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
-        mSendButton = (Button) view.findViewById(R.id.button_send);
+        mSendButton = (ImageButton) view.findViewById(R.id.button_send);
     }
 
     @Override
