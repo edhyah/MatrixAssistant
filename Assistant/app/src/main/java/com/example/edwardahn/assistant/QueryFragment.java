@@ -1,6 +1,9 @@
 package com.example.edwardahn.assistant;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
@@ -116,4 +119,38 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    // QA capabilities
+
+    private QAService qa = new QAService(10000);
+
+
+    class QAThread extends Thread {
+        String inputText;
+
+        public QAThread(String txt) {
+            inputText = txt;
+        }
+
+        public void run() {
+
+            if (inputText == null || inputText.length() == 0)
+                return;
+
+            qa.runQA(inputText, getLocation());
+            //setHtml(va.getText(), va.getImageUrl());
+        }
+    }
+
+    private String getLocation() {
+        String location = null;
+        try {
+            LocationManager locationManager = (LocationManager) getActivity()
+                    .getSystemService(Context.LOCATION_SERVICE);
+            Location l = locationManager
+                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            location = l.getLatitude() + "," + l.getLongitude();
+        } catch (Exception ex) {
+        }
+        return location;
+    }
 }
