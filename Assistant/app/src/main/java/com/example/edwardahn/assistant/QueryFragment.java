@@ -40,6 +40,8 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
     // Array adapter for conversation thread
     public ArrayAdapter<String> mConversationArrayAdapter;
 
+    private QAService qa = new QAService(10000);
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,7 +102,8 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
                     String message = textView.getText().toString();
                     if (message.equals("")) return;
                     textView.setText("");
-                    ((MainActivity) getActivity()).sendMessage(label+message+label);
+                    new QAThread(message).start();
+                    //((MainActivity) getActivity()).sendMessage(label+message+label);
                 }
             }
         });
@@ -120,8 +123,9 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
     };
 
     // QA capabilities
+    //TODO: link code below to phone functions
 
-    private QAService qa = new QAService(10000);
+
 
 
     class QAThread extends Thread {
@@ -137,7 +141,8 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
                 return;
 
             qa.runQA(inputText, getLocation());
-            //setHtml(va.getText(), va.getImageUrl());
+
+            ((MainActivity) getActivity()).sendMessage(label+qa.getText()+label);
         }
     }
 

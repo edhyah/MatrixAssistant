@@ -537,5 +537,5 @@ void loop() {
   // display text
   if (label.equals(TIME)) displayText(text, false);
   else if (label.equals(ECHO)) displayText(text, true);
-  else if (label.equals(QUERY)) return;
+  else if (label.equals(QUERY)) displayText(text, true);
 }

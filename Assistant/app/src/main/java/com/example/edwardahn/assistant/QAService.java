@@ -1,5 +1,7 @@
 package com.example.edwardahn.assistant;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,9 +43,12 @@ public class QAService {
 
     public void runQA(String input, String location) {
 
+        Log.i("", "running QA now" );
+
         try {
             input = URLEncoder.encode(input, "UTF-8");
         } catch (Exception ex) {
+            Log.e("",ex.getMessage());
         }
 
         int timeZoneInMinutes = TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 1000 / 60;
@@ -56,18 +61,29 @@ public class QAService {
 
         String result = "";
 
+        Log.i("", "launching URL connection");
+
         try {
             URLConnection conn = new URL(url).openConnection();
+            Log.i("", "conn instantiated");
             conn.setDoOutput(true);
+            Log.i("", "set do output done");
             conn.setReadTimeout(timeout);
+            Log.i("", "setreadtimeout done");
             conn.setConnectTimeout(timeout);
+            Log.i("", "setconnecttimeout done");
             result = streamToString(conn.getInputStream(), "UTF-8");
+            Log.i("", "maybe a null pointer exception");
         } catch (Exception ex) {
             text = "Error: " + ex.getMessage();
+            Log.e("",ex.getMessage());
             return;
         }
 
+        Log.i("", "finding answer now");
+
         try {
+
             if (result == null || result.length() == 0) {
                 text = "Error processing answer";
                 return;
@@ -93,16 +109,18 @@ public class QAService {
                 if (obj instanceof JSONObject) {
                     JSONObject sObj = (JSONObject) obj;
                     text = sObj.getString("text");
+                    /*
                     JSONArray arr = sObj.getJSONArray("moreText");
                     for (int i = 0; i < arr.length(); i++) {
                         text += " " + arr.getString(i);
-                    }
+                    }*/
                 } else {
                     text = obj.toString();
                 }
             }
         } catch (Exception ex) {
             text = "Parsing error: " + ex.getMessage();
+            Log.e("",text);
             return;
         }
     }
