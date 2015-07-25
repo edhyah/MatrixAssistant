@@ -7,3 +7,5 @@ Current Problems
 LED array will not display the whole text sent by the Android device.
 Possible causes: MTU
 Answers need to be formatted (ex. delete parentheticals)
+Text displayed on display gets progressively faster
+Possible solutions: add spaces (padding) at the end
