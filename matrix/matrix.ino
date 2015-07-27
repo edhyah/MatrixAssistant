@@ -248,11 +248,6 @@ void pushMisc(byte chr, int *data, int *count, int *reg) {
 void getData(String text, int *data, int row, int shift) {
   int count = 24 - shift - 1;
   int reg = 0;
-  /*
-  if (shift > 440) {
-    Serial.println("a");
-    delay(1);
-  }*/
   if (shift < 24) {
     if (shift < 8) reg = 2;
     else if (shift < 16) reg = 1;
@@ -494,7 +489,8 @@ void displayText(String text, boolean scrollIsOn) {
   if (!scrollIsOn) drawText(text, 23);
   else {
     unsigned long time;
-    int timeDelay = 20;
+    //int timeDelay = 20;
+    int timeDelay = 50;
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
       time = millis();

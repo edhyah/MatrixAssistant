@@ -5,7 +5,7 @@ The Matrix Assistant (name pending) is composed of two parts, which are both con
 
 Current Problems
 LED displays up to a 51-character text. nothing longer
-Possible causes: runtime errors, shifting errors
+In more detail: after arduino resets, it correctly displays all of the text. upon the next entry (that is entered into the android application), the arduino shows a 51 character limit)
 Answers need to be formatted (ex. delete parentheticals)
 Text displayed on display gets progressively faster
 Possible solutions: add spaces (padding) at the end
