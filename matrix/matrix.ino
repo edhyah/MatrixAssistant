@@ -248,6 +248,11 @@ void pushMisc(byte chr, int *data, int *count, int *reg) {
 void getData(String text, int *data, int row, int shift) {
   int count = 24 - shift - 1;
   int reg = 0;
+  /*
+  if (shift > 440) {
+    Serial.println("a");
+    delay(1);
+  }*/
   if (shift < 24) {
     if (shift < 8) reg = 2;
     else if (shift < 16) reg = 1;
@@ -489,7 +494,6 @@ void displayText(String text, boolean scrollIsOn) {
   if (!scrollIsOn) drawText(text, 23);
   else {
     unsigned long time;
-    //int timeDelay = 35;
     int timeDelay = 20;
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
@@ -499,7 +503,7 @@ void displayText(String text, boolean scrollIsOn) {
   }
 }
 
-// Arduino-required setup function
+// Arduino-compulsory setup function
 void setup() {
   pinMode(SER, OUTPUT);
   pinMode(LATCH, OUTPUT);
@@ -507,7 +511,7 @@ void setup() {
   Serial.begin(9600);
 }
 
-// Arduino-required loop function
+// Arduino-compulsory loop function
 void loop() {
   String str = "";
   
@@ -528,11 +532,17 @@ void loop() {
     str = str.substring(CODE_LEN);
   }
   
-  // change text if necessary
+  // parse str to read text and label
   if (!str.equals("") && str.length() > 2*CODE_LEN) {
     label = str.substring(0, CODE_LEN);
     text = str.substring(CODE_LEN, str.length()-CODE_LEN);
   }
+  
+  /*
+  if (!label.equals("") && !text.equals("")) {
+  Serial.println("label: " + label);
+  Serial.println("text: " + text);
+  Serial.println("---------------"); }*/
   
   // display text
   if (label.equals(TIME)) displayText(text, false);
