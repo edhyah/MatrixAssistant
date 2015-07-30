@@ -489,8 +489,7 @@ void displayText(String text, boolean scrollIsOn) {
   if (!scrollIsOn) drawText(text, 23);
   else {
     unsigned long time;
-    //int timeDelay = 20;
-    int timeDelay = 50;
+    int timeDelay = 20;
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
       time = millis();
@@ -512,6 +511,7 @@ void loop() {
   String str = "";
   
   // read data
+  /*
   while (Serial.available() > 0) {
     str += char(Serial.read());
     if (Serial.available() == 0) {
@@ -520,7 +520,33 @@ void loop() {
       int count = str.length() - temp.length();
       if (count != 4) delay(2);
     }
+  }*/
+  
+  /*
+  if (Serial.available() > 0) {
+    int count = 0;
+    while (Serial.available() > 0 || count < 4) {
+      if (Serial.available() > 0) {
+        char c = char(Serial.read());
+        if (c == '_') count++;
+        str += c;
+      } else {
+        delay(10);
+        continue;
+      }
+    }
   }
+  
+  Serial.println(str);*/
+  
+  bool written = false;
+  while (Serial.available() > 0) {
+    written = true;
+    Serial.print(char(Serial.read()));
+    delay(100);
+  }
+  if (written) Serial.print("\n");
+  
   
   // remove null string
   if (str.length() >= CODE_LEN
