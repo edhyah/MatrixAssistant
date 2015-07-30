@@ -5,8 +5,8 @@ The Matrix Assistant (name pending) is composed of two parts, which are both con
 
 Current Problems
 LED displays up to a 51-character text. nothing longer
-Cause: not all data sent through Bluetooth receieved by HC-06
-Solution: pending
+Cause: not all data sent through Bluetooth receieved by HC-06 since arduino has a 64 bit serial buffer
+Solution: interrupts
 Answers need to be formatted (ex. delete parentheticals)
 Text displayed on display gets progressively faster
 Possible solutions: add spaces (padding) at the end

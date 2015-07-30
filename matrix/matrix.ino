@@ -511,42 +511,16 @@ void loop() {
   String str = "";
   
   // read data
-  /*
-  while (Serial.available() > 0) {
-    str += char(Serial.read());
-    if (Serial.available() == 0) {
-      String temp = str;
-      temp.replace("_", "");
-      int count = str.length() - temp.length();
-      if (count != 4) delay(2);
-    }
-  }*/
-  
-  /*
-  if (Serial.available() > 0) {
-    int count = 0;
-    while (Serial.available() > 0 || count < 4) {
-      if (Serial.available() > 0) {
-        char c = char(Serial.read());
-        if (c == '_') count++;
-        str += c;
-      } else {
-        delay(10);
-        continue;
-      }
-    }
-  }
-  
-  Serial.println(str);*/
-  
-  bool written = false;
+  boolean written = false;
+  int count = 0;
   while (Serial.available() > 0) {
     written = true;
-    Serial.print(char(Serial.read()));
-    delay(100);
+    char c = char(Serial.read());
+    str += c;
+    if (c == '_') count++;
+    if (Serial.available() == 0 && count < 4) delay(2);
   }
-  if (written) Serial.print("\n");
-  
+  if (written) Serial.println(str);
   
   // remove null string
   if (str.length() >= CODE_LEN
