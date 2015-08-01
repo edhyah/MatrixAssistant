@@ -486,7 +486,7 @@ boolean drawText(String text, int shift) {
     shiftOut(SER, CLK, LSBFIRST, ~data[0]);
     shiftOut(SER, CLK, MSBFIRST, ROWS[row]);
     digitalWrite(LATCH, HIGH);
-    delay(1);
+    //delay(1);
   }
   return success;
 }
@@ -496,11 +496,16 @@ void displayText(String text, boolean scrollIsOn) {
   if (!scrollIsOn) drawText(text, 23);
   else {
     unsigned long time;
-    int timeDelay = 20;
+    //int timeDelay = 20;
+    int scrollSpeed = 4; // higher value == slower speed
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
+      /*
       time = millis();
       while (millis() - time < timeDelay) {
+        if (!drawText(text, i)) return;
+      }*/
+      for (int k = 0; k < scrollSpeed; k++) {
         if (!drawText(text, i)) return;
       }
     }
