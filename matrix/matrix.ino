@@ -511,7 +511,6 @@ void loop() {
   String str = "";
   
   // read data
-  boolean written = false;
   int count = 0;
   while (Serial.available() > 0) {
     written = true;
@@ -520,7 +519,6 @@ void loop() {
     if (c == '_') count++;
     if (Serial.available() == 0 && count < 4) delay(2);
   }
-  if (written) Serial.println(str);
   
   // remove null string
   if (str.length() >= CODE_LEN
@@ -533,12 +531,6 @@ void loop() {
     label = str.substring(0, CODE_LEN);
     text = str.substring(CODE_LEN, str.length()-CODE_LEN);
   }
-  
-  /*
-  if (!label.equals("") && !text.equals("")) {
-  Serial.println("label: " + label);
-  Serial.println("text: " + text);
-  Serial.println("---------------"); }*/
   
   // display text
   if (label.equals(TIME)) displayText(text, false);
