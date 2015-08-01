@@ -469,10 +469,16 @@ void getData(String text, int *data, int row, int shift) {
 }
 
 // Draws text onto matrix at given shift
-void drawText(String text, int shift) {
+// Returns true if successful
+boolean drawText(String text, int shift) {
   int data[3];
   text.toUpperCase();
+  boolean success = true;
   for (int row = 0; row < 8; row++) {
+    if (Serial.available()) {
+      success = false;
+      break;
+    }
     getData(text, data, row, shift);
     digitalWrite(LATCH, LOW);
     shiftOut(SER, CLK, LSBFIRST, ~data[2]);
@@ -482,6 +488,7 @@ void drawText(String text, int shift) {
     digitalWrite(LATCH, HIGH);
     delay(1);
   }
+  return success;
 }
 
 // Displays text with or without scrolling animation
@@ -493,7 +500,9 @@ void displayText(String text, boolean scrollIsOn) {
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
       time = millis();
-      while (millis() - time < timeDelay) drawText(text, i);
+      while (millis() - time < timeDelay) {
+        if (!drawText(text, i)) return;
+      }
     }
   }
 }
@@ -512,8 +521,7 @@ void loop() {
   
   // read data
   int count = 0;
-  while (Serial.available() > 0) {
-    written = true;
+  while (Serial.available()) {
     char c = char(Serial.read());
     str += c;
     if (c == '_') count++;
