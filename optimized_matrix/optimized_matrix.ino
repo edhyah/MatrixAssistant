@@ -468,80 +468,61 @@ void getData(String text, int *data, int row, int shift) {
   return;
 }
 
-// Draws text onto matrix at given shift
-// Returns true if successful
-boolean drawText(String text, int shift) {
-  int data[3];
-  text.toUpperCase();
-  boolean success = true;
-  for (int row = 0; row < 8; row++) {
-    if (Serial.available()) {
-      success = false;
-      break;
-    }
-    getData(text, data, row, shift);
-    digitalWrite(LATCH, LOW);
-    shiftOut(SER, CLK, LSBFIRST, ~data[2]);
-    shiftOut(SER, CLK, LSBFIRST, ~data[1]);
-    shiftOut(SER, CLK, LSBFIRST, ~data[0]);
-    shiftOut(SER, CLK, MSBFIRST, ROWS[row]);
-    digitalWrite(LATCH, HIGH);
-    //delay(1);
-  }
-  return success;
-}
-
-/*
-// more efficient drawtext than above by getting data first
-boolean drawText(String text, int shift) {
-  int data[24];
+// draws text that does not scroll
+void drawStaticText(String text, int *data) {
   int *ptr = data;
-  int scrollSpeed = 20;
-  text.toUpperCase();
-  boolean success = true;
+  int cRow = 0;
+  int shift = 23;
   for (int row = 0; row < 8; row++) {
     getData(text, ptr, row, shift);
     ptr += 3;
   }
-  for (int i = 0; i < scrollSpeed; i++) {
+  while (!Serial.available()) {
+    digitalWrite(LATCH, LOW);
+    shiftOut(SER, CLK, LSBFIRST, ~data[2 + 3 * (cRow % 8)]);
+    shiftOut(SER, CLK, LSBFIRST, ~data[1 + 3 * (cRow % 8)]);
+    shiftOut(SER, CLK, LSBFIRST, ~data[0 + 3 * (cRow % 8)]);
+    shiftOut(SER, CLK, MSBFIRST, ROWS[cRow % 8]);
+    digitalWrite(LATCH, HIGH);
+    cRow++;
+    delay(1);
+  }
+}
+
+// draws text that scrolls
+void drawScrollingText(String text, int *data) {
+  int *ptr = data;
+  int totalShifts = 6 * text.length() + 40;
+  int totalCycles = 3;
+  for (int shift = 0; shift < totalShifts; shift++) {
+    if (Serial.available()) return;
     for (int row = 0; row < 8; row++) {
-      if (Serial.available()) {
-        success = false;
-        break;
-      }
+      getData(text, ptr, row, shift);
+      ptr += 3;
+    }
+    ptr = data;
+    int cRow = 0;
+    int cCycle = 0;
+    while (!Serial.available() && cCycle < totalCycles) {
+      delay(1);
       digitalWrite(LATCH, LOW);
-      shiftOut(SER, CLK, LSBFIRST, ~data[2+3*row]);
-      shiftOut(SER, CLK, LSBFIRST, ~data[1+3*row]);
-      shiftOut(SER, CLK, LSBFIRST, ~data[0+3*row]);
-      shiftOut(SER, CLK, MSBFIRST, ROWS[row]);
+      shiftOut(SER, CLK, LSBFIRST, ~data[2 + 3 * (cRow % 8)]);
+      shiftOut(SER, CLK, LSBFIRST, ~data[1 + 3 * (cRow % 8)]);
+      shiftOut(SER, CLK, LSBFIRST, ~data[0 + 3 * (cRow % 8)]);
+      shiftOut(SER, CLK, MSBFIRST, ROWS[cRow % 8]);
       digitalWrite(LATCH, HIGH);
       //delay(1);
+      cRow++;
+      if (cRow % 8 == 0) cCycle++;
     }
-    //delay(1);
   }
-  return success;
-}*/
+}
 
 // Displays text with or without scrolling animation
 void displayText(String text, boolean scrollIsOn) {
-  if (!scrollIsOn) drawText(text, 23);
-  else {
-    unsigned long time;
-    //int timeDelay = 20;
-    int scrollSpeed = 5; // higher value == slower speed
-    int cycleLength = 6 * text.length() + 40;
-    for (int i = 0; i < cycleLength; i++) {
-      /*
-      time = millis();
-      while (millis() - time < timeDelay) {
-        if (!drawText(text, i)) return;
-      }*/
-      for (int k = 0; k < scrollSpeed; k++) {
-        if (!drawText(text, i)) return;
-      }
-      //if (!drawText(text, i)) return;
-    }
-  }
+  int data[3 * 8];
+  if (!scrollIsOn) drawStaticText(text, data);
+  else drawScrollingText(text, data);
 }
 
 // Arduino-compulsory setup function
@@ -578,6 +559,7 @@ void loop() {
   }
   
   // display text
+  text.toUpperCase();
   if (label.equals(TIME)) displayText(text, false);
   else if (label.equals(ECHO)) displayText(text, true);
   else if (label.equals(QUERY)) displayText(text, true);
