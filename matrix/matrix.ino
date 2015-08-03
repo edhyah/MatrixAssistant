@@ -468,6 +468,7 @@ void getData(String text, int *data, int row, int shift) {
   return;
 }
 
+/*
 // Draws text onto matrix at given shift
 // Returns true if successful
 boolean drawText(String text, int shift) {
@@ -490,6 +491,37 @@ boolean drawText(String text, int shift) {
   }
   return success;
 }
+*/
+
+// more efficient drawtext than above by getting data first
+boolean drawText(String text, int shift) {
+  int data[24];
+  int *ptr = data;
+  int scrollSpeed = 20;
+  text.toUpperCase();
+  boolean success = true;
+  for (int row = 0; row < 8; row++) {
+    getData(text, ptr, row, shift);
+    ptr += 3;
+  }
+  for (int i = 0; i < scrollSpeed; i++) {
+    for (int row = 0; row < 8; row++) {
+      if (Serial.available()) {
+        success = false;
+        break;
+      }
+      digitalWrite(LATCH, LOW);
+      shiftOut(SER, CLK, LSBFIRST, ~data[2+3*row]);
+      shiftOut(SER, CLK, LSBFIRST, ~data[1+3*row]);
+      shiftOut(SER, CLK, LSBFIRST, ~data[0+3*row]);
+      shiftOut(SER, CLK, MSBFIRST, ROWS[row]);
+      digitalWrite(LATCH, HIGH);
+      //delay(1);
+    }
+    //delay(1);
+  }
+  return success;
+}
 
 // Displays text with or without scrolling animation
 void displayText(String text, boolean scrollIsOn) {
@@ -497,7 +529,7 @@ void displayText(String text, boolean scrollIsOn) {
   else {
     unsigned long time;
     //int timeDelay = 20;
-    int scrollSpeed = 4; // higher value == slower speed
+    int scrollSpeed = 5; // higher value == slower speed
     int cycleLength = 6 * text.length() + 40;
     for (int i = 0; i < cycleLength; i++) {
       /*
@@ -505,9 +537,11 @@ void displayText(String text, boolean scrollIsOn) {
       while (millis() - time < timeDelay) {
         if (!drawText(text, i)) return;
       }*/
+      /*
       for (int k = 0; k < scrollSpeed; k++) {
         if (!drawText(text, i)) return;
-      }
+      }*/
+      if (!drawText(text, i)) return;
     }
   }
 }
