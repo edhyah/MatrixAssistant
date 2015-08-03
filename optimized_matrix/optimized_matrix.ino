@@ -8,6 +8,10 @@
 String text = "";
 String label = "";
 
+// Helper variables for getting data to registers
+int pos = 0; // position of left-most char on display
+String cText = "";
+
 // Codes
 const String NULLS = "/NULL/";
 const String TIME = "_TIME_";
@@ -167,28 +171,30 @@ void clearDataArray(int *data) {
 
 // Pushes single letter of alphabet or 5-bit width symbols
 // onto data array - helper function to getData
-void pushAlpha(byte letter, int *data, int *count, int *reg) {
+boolean pushAlpha(byte letter, int *data, int *count, int *reg) {
   int width = ALPHA_WIDTH;
-  if (*count < 0) {
-    if (-(*count) >= ALPHA_WIDTH) {
-      *count += ALPHA_WIDTH + 1;
-      return;
+  if (pos < 0) {
+    if (-pos >= ALPHA_WIDTH) {
+      pos += ALPHA_WIDTH + 1;
+      cText = cText.substring(1);
+      return true;
     } else {
-      letter = letter << -(*count);
-      width += *count;
-      *count = 0;
+      letter = letter << -pos;
+      width += pos;
+      //pos = 0;
     }
   }
   data[*reg] = data[*reg] | letter >> (*count % 8);
   if (*count % 8 + ALPHA_WIDTH + 1 >= 8) {
     (*reg)++;
-    if (*reg > 2) return;
+    if (*reg > 2) return false;
     if (*count % 8 + ALPHA_WIDTH > 8) {
       data[*reg] = data[*reg] | letter << (8 - *count % 8);
     }
   }
   *count += width;
   (*count)++;
+  return false;
 }
 
 // Pushes single number or 2-bit width symbols onto
@@ -245,19 +251,19 @@ void pushMisc(byte chr, int *data, int *count, int *reg) {
 
 // Prepares data to contain integers that will be pushed
 // onto shift registers to display column data for a given row
-void getData(String text, int *data, int row, int shift) {
-  int count = 24 - shift - 1;
+void getData(int *data, int row, int shift) {
+  int count = (shift < 23 ? pos : 0);
   int reg = 0;
   if (shift < 24) {
     if (shift < 8) reg = 2;
     else if (shift < 16) reg = 1;
   }
   clearDataArray(data);
-  for (int i = 0; i < text.length(); i++) {
+  for (int i = 0; i < cText.length(); i++) {
     if (reg > 2) return;
-    switch(text[i]) {
+    switch(cText[i]) {
       case 'A':
-        pushAlpha(SYM_A[row], data, &count, &reg);
+        if (pushAlpha(SYM_A[row], data, &count, &reg)) i--;
         break;
       case 'B':
         pushAlpha(SYM_B[row], data, &count, &reg);
@@ -469,12 +475,12 @@ void getData(String text, int *data, int row, int shift) {
 }
 
 // draws text that does not scroll
-void drawStaticText(String text, int *data) {
+void drawStaticText(int *data) {
   int *ptr = data;
   int cRow = 0;
   int shift = 23;
   for (int row = 0; row < 8; row++) {
-    getData(text, ptr, row, shift);
+    getData(ptr, row, shift);
     ptr += 3;
   }
   while (!Serial.available()) {
@@ -490,14 +496,15 @@ void drawStaticText(String text, int *data) {
 }
 
 // draws text that scrolls
-void drawScrollingText(String text, int *data) {
+void drawScrollingText(int *data) {
   int *ptr = data;
   int totalShifts = 6 * text.length() + 40;
   int totalCycles = 3;
+  pos = 23;
   for (int shift = 0; shift < totalShifts; shift++) {
     if (Serial.available()) return;
     for (int row = 0; row < 8; row++) {
-      getData(text, ptr, row, shift);
+      getData(ptr, row, shift);
       ptr += 3;
     }
     ptr = data;
@@ -515,14 +522,15 @@ void drawScrollingText(String text, int *data) {
       cRow++;
       if (cRow % 8 == 0) cCycle++;
     }
+    pos--;
   }
 }
 
 // Displays text with or without scrolling animation
-void displayText(String text, boolean scrollIsOn) {
+void displayText(boolean scrollIsOn) {
   int data[3 * 8];
-  if (!scrollIsOn) drawStaticText(text, data);
-  else drawScrollingText(text, data);
+  if (!scrollIsOn) drawStaticText(data);
+  else drawScrollingText(data);
 }
 
 // Arduino-compulsory setup function
@@ -560,7 +568,8 @@ void loop() {
   
   // display text
   text.toUpperCase();
-  if (label.equals(TIME)) displayText(text, false);
-  else if (label.equals(ECHO)) displayText(text, true);
-  else if (label.equals(QUERY)) displayText(text, true);
+  cText = text;
+  if (label.equals(TIME)) displayText(false);
+  else if (label.equals(ECHO)) displayText(true);
+  else if (label.equals(QUERY)) displayText(true);
 }
