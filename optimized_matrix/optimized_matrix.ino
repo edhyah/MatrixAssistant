@@ -173,8 +173,8 @@ void clearDataArray(int *data) {
 // onto data array - helper function to getData
 boolean pushAlpha(byte letter, int *data, int *count, int *reg) {
   int width = ALPHA_WIDTH;
-  if (pos < 0) {
-    if (-pos >= ALPHA_WIDTH) {
+  if (pos < 0 && *count == 0) {
+    if (-pos > ALPHA_WIDTH) {
       pos += ALPHA_WIDTH + 1;
       cText = cText.substring(1);
       return true;
