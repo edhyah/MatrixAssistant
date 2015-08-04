@@ -266,127 +266,127 @@ void getData(int *data, int row, int shift) {
         if (pushAlpha(SYM_A[row], data, &count, &reg)) i--;
         break;
       case 'B':
-        pushAlpha(SYM_B[row], data, &count, &reg);
+        if (pushAlpha(SYM_B[row], data, &count, &reg)) i--;
         break;
       case 'C':
-        pushAlpha(SYM_C[row], data, &count, &reg);
+        if (pushAlpha(SYM_C[row], data, &count, &reg)) i--;
         break;
       case 'D':
-        pushAlpha(SYM_D[row], data, &count, &reg);
+        if (pushAlpha(SYM_D[row], data, &count, &reg)) i--;
         break;
       case 'E':
-        pushAlpha(SYM_E[row], data, &count, &reg);
+        if (pushAlpha(SYM_E[row], data, &count, &reg)) i--;
         break;
       case 'F':
-        pushAlpha(SYM_F[row], data, &count, &reg);
+        if (pushAlpha(SYM_F[row], data, &count, &reg)) i--;
         break;
       case 'G':
-        pushAlpha(SYM_G[row], data, &count, &reg);
+        if (pushAlpha(SYM_G[row], data, &count, &reg)) i--;
         break;
       case 'H':
-        pushAlpha(SYM_H[row], data, &count, &reg);
+        if (pushAlpha(SYM_H[row], data, &count, &reg)) i--;
         break;
       case 'I':
-        pushAlpha(SYM_I[row], data, &count, &reg);
+        if (pushAlpha(SYM_I[row], data, &count, &reg)) i--;
         break;
       case 'J':
-        pushAlpha(SYM_J[row], data, &count, &reg);
+        if (pushAlpha(SYM_J[row], data, &count, &reg)) i--;
         break;
       case 'K':
-        pushAlpha(SYM_K[row], data, &count, &reg);
+        if (pushAlpha(SYM_K[row], data, &count, &reg)) i--;
         break;
       case 'L':
-        pushAlpha(SYM_L[row], data, &count, &reg);
+        if (pushAlpha(SYM_L[row], data, &count, &reg)) i--;
         break;
       case 'M':
-        pushAlpha(SYM_M[row], data, &count, &reg);
+        if (pushAlpha(SYM_M[row], data, &count, &reg)) i--;
         break;
       case 'N':
-        pushAlpha(SYM_N[row], data, &count, &reg);
+        if (pushAlpha(SYM_N[row], data, &count, &reg)) i--;
         break;
       case 'O':
-        pushAlpha(SYM_O[row], data, &count, &reg);
+        if (pushAlpha(SYM_O[row], data, &count, &reg)) i--;
         break;
       case 'P':
-        pushAlpha(SYM_P[row], data, &count, &reg);
+        if (pushAlpha(SYM_P[row], data, &count, &reg)) i--;
         break;
       case 'Q':
-        pushAlpha(SYM_Q[row], data, &count, &reg);
+        if (pushAlpha(SYM_Q[row], data, &count, &reg)) i--;
         break;
       case 'R':
-        pushAlpha(SYM_R[row], data, &count, &reg);
+        if (pushAlpha(SYM_R[row], data, &count, &reg)) i--;
         break;
       case 'S':
-        pushAlpha(SYM_S[row], data, &count, &reg);
+        if (pushAlpha(SYM_S[row], data, &count, &reg)) i--;
         break;
       case 'T':
-        pushAlpha(SYM_T[row], data, &count, &reg);
+        if (pushAlpha(SYM_T[row], data, &count, &reg)) i--;
         break;
       case 'U':
-        pushAlpha(SYM_U[row], data, &count, &reg);
+        if (pushAlpha(SYM_U[row], data, &count, &reg)) i--;
         break;
       case 'V':
-        pushAlpha(SYM_V[row], data, &count, &reg);
+        if (pushAlpha(SYM_V[row], data, &count, &reg)) i--;
         break;
       case 'W':
-        pushAlpha(SYM_W[row], data, &count, &reg);
+        if (pushAlpha(SYM_W[row], data, &count, &reg)) i--;
         break;
       case 'X':
-        pushAlpha(SYM_X[row], data, &count, &reg);
+        if (pushAlpha(SYM_X[row], data, &count, &reg)) i--;
         break;
       case 'Y':
-        pushAlpha(SYM_Y[row], data, &count, &reg);
+        if (pushAlpha(SYM_Y[row], data, &count, &reg)) i--;
         break;
       case 'Z':
-        pushAlpha(SYM_Z[row], data, &count, &reg);
+        if (pushAlpha(SYM_Z[row], data, &count, &reg)) i--;
         break;
       case '?':
-        pushAlpha(SYM_QUERY[row], data, &count, &reg);
+        if (pushAlpha(SYM_QUERY[row], data, &count, &reg)) i--;
         break;
       case '!':
-        pushAlpha(SYM_EXC[row], data, &count, &reg);
+        if (pushAlpha(SYM_EXC[row], data, &count, &reg)) i--;
         break;
       case '$':
-        pushAlpha(SYM_DOL[row], data, &count, &reg);
+        if (pushAlpha(SYM_DOL[row], data, &count, &reg)) i--;
         break;
       case '@':
-        pushAlpha(SYM_AT[row], data, &count, &reg);
+        if (pushAlpha(SYM_AT[row], data, &count, &reg)) i--;
         break;
       case '#':
-        pushAlpha(SYM_POUND[row], data, &count, &reg);
+        if (pushAlpha(SYM_POUND[row], data, &count, &reg)) i--;
         break;
       case '%':
-        pushAlpha(SYM_PRCNT[row], data, &count, &reg);
+        if (pushAlpha(SYM_PRCNT[row], data, &count, &reg)) i--;
         break;
       case '^':
-        pushAlpha(SYM_CARET[row], data, &count, &reg);
+        if (pushAlpha(SYM_CARET[row], data, &count, &reg)) i--;
         break;
       case '&':
-        pushAlpha(SYM_AMP[row], data, &count, &reg);
+        if (pushAlpha(SYM_AMP[row], data, &count, &reg)) i--;
         break;
       case '*':
-        pushAlpha(SYM_AST[row], data, &count, &reg);
+        if (pushAlpha(SYM_AST[row], data, &count, &reg)) i--;
         break;
       case '~':
-        pushAlpha(SYM_TILDE[row], data, &count, &reg);
+        if (pushAlpha(SYM_TILDE[row], data, &count, &reg)) i--;
         break;
       case '+':
-        pushAlpha(SYM_PLUS[row], data, &count, &reg);
+        if (pushAlpha(SYM_PLUS[row], data, &count, &reg)) i--;
         break;
       case '_':
-        pushAlpha(SYM_UNDSC[row], data, &count, &reg);
+        if (pushAlpha(SYM_UNDSC[row], data, &count, &reg)) i--;
         break;
       case '/':
-        pushAlpha(SYM_SLASH[row], data, &count, &reg);
+        if (pushAlpha(SYM_SLASH[row], data, &count, &reg)) i--;
         break;
       case '\\':
-        pushAlpha(SYM_BKSLASH[row], data, &count, &reg);
+        if (pushAlpha(SYM_BKSLASH[row], data, &count, &reg)) i--;
         break;
       case '<':
-        pushAlpha(SYM_LCARET[row], data, &count, &reg);
+        if (pushAlpha(SYM_LCARET[row], data, &count, &reg)) i--;
         break;
       case '>':
-        pushAlpha(SYM_RCARET[row], data, &count, &reg);
+        if (pushAlpha(SYM_RCARET[row], data, &count, &reg)) i--;
         break;
       case '0':
         pushNum(SYM_0[row], data, &count, &reg);
