@@ -227,28 +227,30 @@ boolean pushNum(byte number, int *data, int *count, int *reg) {
 
 // Pushes miscellanceous character onto data
 // array - helper function to getData
-void pushMisc(byte chr, int *data, int *count, int *reg) {
+boolean pushMisc(byte chr, int *data, int *count, int *reg) {
   int width = MISC_WIDTH;
-  if (*count < 0) {
-    if (-(*count) >= MISC_WIDTH) {
-      *count += MISC_WIDTH + 1;
-      return;
+  if (pos < 0 && *count == 0) {
+    if (-pos > MISC_WIDTH) {
+      pos += MISC_WIDTH + 1;
+      cText = cText.substring(1);
+      return true;
     } else {
-      chr = chr << -(*count);
-      width += *count;
-      *count = 0;
+      chr = chr << -pos;
+      width += pos;
+      //*count = 0;
     }
   }
   data[*reg] = data[*reg] | chr >> (*count % 8);
   if (*count % 8 + MISC_WIDTH + 1 >= 8) {
     (*reg)++;
-    if (*reg > 2) return;
+    if (*reg > 2) return false;
     if (*count % 8 + MISC_WIDTH > 8) {
       data[*reg] = data[*reg] | chr << (8 - *count % 8);
     }
   }
   *count += width;
   (*count)++;
+  return false;
 }
 
 // Prepares data to contain integers that will be pushed
@@ -442,34 +444,34 @@ void getData(int *data, int row, int shift) {
         if (pushNum(SYM_QUOTE[row], data, &count, &reg)) i--;
         break;
       case ':':
-        pushMisc(SYM_COLON[row], data, &count, &reg);
+        if (pushMisc(SYM_COLON[row], data, &count, &reg)) i--;
         break;
       case '(':
-        pushMisc(SYM_LPAREN[row], data, &count, &reg);
+        if (pushMisc(SYM_LPAREN[row], data, &count, &reg)) i--;
         break;
       case ')':
-        pushMisc(SYM_RPAREN[row], data, &count, &reg);
+        if (pushMisc(SYM_RPAREN[row], data, &count, &reg)) i--;
         break;
       case '.':
-        pushMisc(SYM_PER[row], data, &count, &reg);
+        if (pushMisc(SYM_PER[row], data, &count, &reg)) i--;
         break;
       case '[':
-        pushMisc(SYM_LBRACK[row], data, &count, &reg);
+        if (pushMisc(SYM_LBRACK[row], data, &count, &reg)) i--;
         break;
       case ']':
-        pushMisc(SYM_RBRACK[row], data, &count, &reg);
+        if (pushMisc(SYM_RBRACK[row], data, &count, &reg)) i--;
         break;
       case ';':
-        pushMisc(SYM_SEMICLN[row], data, &count, &reg);
+        if (pushMisc(SYM_SEMICLN[row], data, &count, &reg)) i--;
         break;
       case ',':
-        pushMisc(SYM_COMMA[row], data, &count, &reg);
+        if (pushMisc(SYM_COMMA[row], data, &count, &reg)) i--;
         break;
       case '|':
-        pushMisc(SYM_PIPE[row], data, &count, &reg);
+        if (pushMisc(SYM_PIPE[row], data, &count, &reg)) i--;
         break;
       default:
-        pushNum(SYM_SPACE[row], data, &count, &reg);
+        if (pushNum(SYM_SPACE[row], data, &count, &reg)) i--;
         break;
     }
   }
