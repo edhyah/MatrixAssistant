@@ -199,28 +199,30 @@ boolean pushAlpha(byte letter, int *data, int *count, int *reg) {
 
 // Pushes single number or 2-bit width symbols onto
 // data array - helper function to getData
-void pushNum(byte number, int *data, int *count, int *reg) {
+boolean pushNum(byte number, int *data, int *count, int *reg) {
   int width = NUM_WIDTH;
-  if (*count < 0) {
-    if (-(*count) >= NUM_WIDTH) {
-      *count += NUM_WIDTH + 1;
-      return;
+  if (pos < 0 && *count == 0) {
+    if (-pos > NUM_WIDTH) {
+      pos += NUM_WIDTH + 1;
+      cText = cText.substring(1);
+      return true;
     } else {
-      number = number << -(*count);
-      width += *count;
-      *count = 0;
+      number = number << -pos;
+      width += pos;
+      //*count = 0;
     }
   }
   data[*reg] = data[*reg] | number >> (*count % 8);
   if (*count % 8 + NUM_WIDTH + 1 >= 8) {
     (*reg)++;
-    if (*reg > 2) return;
+    if (*reg > 2) return false;
     if (*count % 8 + NUM_WIDTH > 8) {
       data[*reg] = data[*reg] | number << (8 - *count % 8);
     }
   }
   *count += width;
   (*count)++;
+  return false;
 }
 
 // Pushes miscellanceous character onto data
@@ -389,55 +391,55 @@ void getData(int *data, int row, int shift) {
         if (pushAlpha(SYM_RCARET[row], data, &count, &reg)) i--;
         break;
       case '0':
-        pushNum(SYM_0[row], data, &count, &reg);
+        if (pushNum(SYM_0[row], data, &count, &reg)) i--;
         break;
       case '1':
-        pushNum(SYM_1[row], data, &count, &reg);
+        if (pushNum(SYM_1[row], data, &count, &reg)) i--;
         break;
       case '2':
-        pushNum(SYM_2[row], data, &count, &reg);
+        if (pushNum(SYM_2[row], data, &count, &reg)) i--;
         break;
       case '3':
-        pushNum(SYM_3[row], data, &count, &reg);
+        if (pushNum(SYM_3[row], data, &count, &reg)) i--;
         break;
       case '4':
-        pushNum(SYM_4[row], data, &count, &reg);
+        if (pushNum(SYM_4[row], data, &count, &reg)) i--;
         break;
       case '5':
-        pushNum(SYM_5[row], data, &count, &reg);
+        if (pushNum(SYM_5[row], data, &count, &reg)) i--;
         break;
       case '6':
-        pushNum(SYM_6[row], data, &count, &reg);
+        if (pushNum(SYM_6[row], data, &count, &reg)) i--;
         break;
       case '7':
-        pushNum(SYM_7[row], data, &count, &reg);
+        if (pushNum(SYM_7[row], data, &count, &reg)) i--;
         break;
       case '8':
-        pushNum(SYM_8[row], data, &count, &reg);
+        if (pushNum(SYM_8[row], data, &count, &reg)) i--;
         break;
       case '9':
-        pushNum(SYM_9[row], data, &count, &reg);
+        if (pushNum(SYM_9[row], data, &count, &reg)) i--;
         break;
       case ' ':
-        pushNum(SYM_SPACE[row], data, &count, &reg);
+        if (pushNum(SYM_SPACE[row], data, &count, &reg)) i--;
         break;
       case '=':
-        pushNum(SYM_EQUAL[row], data, &count, &reg);
+        if (pushNum(SYM_EQUAL[row], data, &count, &reg)) i--;
         break;
       case '-':
-        pushNum(SYM_MINUS[row], data, &count, &reg);
+        if (pushNum(SYM_MINUS[row], data, &count, &reg)) i--;
         break;
       case '{':
-        pushNum(SYM_LBRACE[row], data, &count, &reg);
+        if (pushNum(SYM_LBRACE[row], data, &count, &reg)) i--;
         break;
       case '}':
-        pushNum(SYM_RBRACE[row], data, &count, &reg);
+        if (pushNum(SYM_RBRACE[row], data, &count, &reg)) i--;
         break;
       case '\'':
-        pushNum(SYM_APOST[row], data, &count, &reg);
+        if (pushNum(SYM_APOST[row], data, &count, &reg)) i--;
         break;
       case '"':
-        pushNum(SYM_QUOTE[row], data, &count, &reg);
+        if (pushNum(SYM_QUOTE[row], data, &count, &reg)) i--;
         break;
       case ':':
         pushMisc(SYM_COLON[row], data, &count, &reg);
