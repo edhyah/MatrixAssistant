@@ -4,13 +4,15 @@
  *
  */
 
-// Text that will be displayed
+// Strings parsed from received message
 String text = "";
 String label = "";
 
-// Helper variables for getting data to registers
-int pos = 0; // position of left-most char on display
-String cText = "";
+// Position of leftmost character on matrix
+int pos = 0;
+
+// Text that is currently being displayed
+String cText = ""; // text
 
 // Codes
 const String NULLS = "/NULL/";
@@ -162,17 +164,19 @@ const byte SYM_COMMA[] = {0, 0, 0, 0, 0, 0, B11000000, B01000000};
 const byte SYM_PIPE[] = {0, B01000000, B01000000, B01000000, \
   B01000000, B01000000, B01000000, 0};
 
-// Sets all elements in data to 0
+// Sets all elements in data array to 0
 void clearDataArray(int *data) {
   data[0] = 0;
   data[1] = 0;
   data[2] = 0;
 }
 
-// Pushes single letter of alphabet or 5-bit width symbols
+// Pushes single letter of alphabet or 5-bit width symbol
 // onto data array - helper function to getData
+// Returns true if cText is truncated
 boolean pushAlpha(byte letter, int *data, int *count, int *reg) {
   int width = ALPHA_WIDTH;
+  // process letters that are not displayed or partially displayed on matrix
   if (pos < 0 && *count == 0) {
     if (-pos > ALPHA_WIDTH) {
       pos += ALPHA_WIDTH + 1;
@@ -181,9 +185,9 @@ boolean pushAlpha(byte letter, int *data, int *count, int *reg) {
     } else {
       letter = letter << -pos;
       width += pos;
-      //pos = 0;
     }
   }
+  // push letter onto data array
   data[*reg] = data[*reg] | letter >> (*count % 8);
   if (*count % 8 + ALPHA_WIDTH + 1 >= 8) {
     (*reg)++;
@@ -197,10 +201,12 @@ boolean pushAlpha(byte letter, int *data, int *count, int *reg) {
   return false;
 }
 
-// Pushes single number or 2-bit width symbols onto
+// Pushes single number or 4-bit width symbols onto
 // data array - helper function to getData
+// Returns true if cText is truncated
 boolean pushNum(byte number, int *data, int *count, int *reg) {
   int width = NUM_WIDTH;
+  // process numbers that are not displayed or partially displayed on matrix
   if (pos < 0 && *count == 0) {
     if (-pos > NUM_WIDTH) {
       pos += NUM_WIDTH + 1;
@@ -209,9 +215,9 @@ boolean pushNum(byte number, int *data, int *count, int *reg) {
     } else {
       number = number << -pos;
       width += pos;
-      //*count = 0;
     }
   }
+  // push number onto data array
   data[*reg] = data[*reg] | number >> (*count % 8);
   if (*count % 8 + NUM_WIDTH + 1 >= 8) {
     (*reg)++;
@@ -225,10 +231,12 @@ boolean pushNum(byte number, int *data, int *count, int *reg) {
   return false;
 }
 
-// Pushes miscellanceous character onto data
+// Pushes miscellaneous (2-bit width) character onto data
 // array - helper function to getData
+// Returns true if cText is truncated
 boolean pushMisc(byte chr, int *data, int *count, int *reg) {
   int width = MISC_WIDTH;
+  // process characters that are not displayed or partially displayed on matrix
   if (pos < 0 && *count == 0) {
     if (-pos > MISC_WIDTH) {
       pos += MISC_WIDTH + 1;
@@ -237,9 +245,9 @@ boolean pushMisc(byte chr, int *data, int *count, int *reg) {
     } else {
       chr = chr << -pos;
       width += pos;
-      //*count = 0;
     }
   }
+  // push character onto data array
   data[*reg] = data[*reg] | chr >> (*count % 8);
   if (*count % 8 + MISC_WIDTH + 1 >= 8) {
     (*reg)++;
@@ -253,11 +261,10 @@ boolean pushMisc(byte chr, int *data, int *count, int *reg) {
   return false;
 }
 
-// Prepares data to contain integers that will be pushed
-// onto shift registers to display column data for a given row
+// Loads bytes onto data array
 void getData(int *data, int row, int shift) {
-  int count = (shift < 23 ? pos : 0);
-  int reg = 0;
+  int count = (shift < 23 ? pos : 0); // points to columns in matrix
+  int reg = 0; // register
   if (shift < 24) {
     if (shift < 8) reg = 2;
     else if (shift < 16) reg = 1;
@@ -478,16 +485,18 @@ void getData(int *data, int row, int shift) {
   return;
 }
 
-// draws text that does not scroll
+// Draws text onto matrix that does not scroll
 void drawStaticText(int *data) {
   int *ptr = data;
   int cRow = 0;
-  int shift = 23;
+  int shift = 23; // align text to left-side of matrix
   for (int row = 0; row < 8; row++) {
+    // load info onto data array, one row at a time
     getData(ptr, row, shift);
     ptr += 3;
   }
   while (!Serial.available()) {
+    // push data from data array onto shift registers
     digitalWrite(LATCH, LOW);
     shiftOut(SER, CLK, LSBFIRST, ~data[2 + 3 * (cRow % 8)]);
     shiftOut(SER, CLK, LSBFIRST, ~data[1 + 3 * (cRow % 8)]);
@@ -499,30 +508,31 @@ void drawStaticText(int *data) {
   }
 }
 
-// draws text that scrolls
+// Draws text onto matrix that scrolls
 void drawScrollingText(int *data) {
   int *ptr = data;
-  int totalShifts = 6 * text.length() + 40;
-  int totalCycles = 3;
+  int totalShifts = 6 * text.length() + 40; // for one cycle
+  int totalCycles = 3; // determines scroll speed
   pos = 23;
   for (int shift = 0; shift < totalShifts; shift++) {
     if (Serial.available()) return;
     for (int row = 0; row < 8; row++) {
+      // load info onto data array, one row at a time
       getData(ptr, row, shift);
       ptr += 3;
     }
-    ptr = data;
+    ptr = data; // reset ptr to beginning of data array
     int cRow = 0;
     int cCycle = 0;
     while (!Serial.available() && cCycle < totalCycles) {
-      delay(1);
+      // push data from data array onto shift registers
       digitalWrite(LATCH, LOW);
       shiftOut(SER, CLK, LSBFIRST, ~data[2 + 3 * (cRow % 8)]);
       shiftOut(SER, CLK, LSBFIRST, ~data[1 + 3 * (cRow % 8)]);
       shiftOut(SER, CLK, LSBFIRST, ~data[0 + 3 * (cRow % 8)]);
       shiftOut(SER, CLK, MSBFIRST, ROWS[cRow % 8]);
       digitalWrite(LATCH, HIGH);
-      //delay(1);
+      delay(1);
       cRow++;
       if (cRow % 8 == 0) cCycle++;
     }
@@ -530,8 +540,10 @@ void drawScrollingText(int *data) {
   }
 }
 
-// Displays text with or without scrolling animation
+// Displays text
 void displayText(boolean scrollIsOn) {
+  // empty array that contains data to display on matrix
+  // 3 ints needed to display each row on matrix and 8 rows in matrix
   int data[3 * 8];
   if (!scrollIsOn) drawStaticText(data);
   else drawScrollingText(data);
@@ -558,7 +570,7 @@ void loop() {
     if (Serial.available() == 0 && count < 4) delay(2);
   }
   
-  // remove null string
+  // remove null string if available
   if (str.length() >= CODE_LEN
     && str.substring(0, CODE_LEN) == NULLS) {
     str = str.substring(CODE_LEN);
