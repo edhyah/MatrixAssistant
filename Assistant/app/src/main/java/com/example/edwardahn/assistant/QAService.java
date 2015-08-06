@@ -13,6 +13,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.TimeZone;
 
+import opennlp.tools.sentdetect.SentenceDetector;
+
 
 /**
  * Created by edwardahn on 7/17/15.
@@ -27,7 +29,7 @@ public class QAService {
     public String getText() { return text; }
 
     private String deleteSentences(String s) {
-        SentenceModel
+        //
         return s;
     }
 
