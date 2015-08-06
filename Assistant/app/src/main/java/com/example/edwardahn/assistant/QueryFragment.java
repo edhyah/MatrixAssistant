@@ -129,12 +129,6 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    // QA capabilities
-    //TODO: link code below to phone functions
-
-
-
-
     class QAThread extends Thread {
         String inputText;
 
@@ -149,6 +143,7 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
 
             qa.runQA(inputText, getLocation());
 
+            // TODO: solve this problem
             ((MainActivity) getActivity()).sendMessage(label+qa.getText()+label);
         }
     }

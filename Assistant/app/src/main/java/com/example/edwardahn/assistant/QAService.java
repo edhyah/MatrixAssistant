@@ -61,9 +61,16 @@ public class QAService {
     private String processText(String s) {
         // delete all sentences except the first
         s = deleteSentences(s);
+
         // delete parenthetical
         s = s.replaceAll("\\(.*?\\)", "");
+
         // NEO not Jeannie
+        int index = s.indexOf("Jeannie");
+        if (index != -1) {
+            s = s.substring(0,index) + "Neo" + s.substring(index+"Jeannie".length());
+        }
+
         return s;
     }
 
@@ -84,6 +91,12 @@ public class QAService {
     }
 
     public void runQA(String input, String location) {
+
+        // NEO not Jeannie
+        int index = input.indexOf("Jeannie");
+        if (index != -1) {
+            input = input.substring(0,index) + "Neo" + input.substring(index+"Jeannie".length());
+        }
 
         Log.i("", "running QA now" );
 
