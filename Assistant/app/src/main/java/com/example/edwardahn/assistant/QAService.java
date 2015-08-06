@@ -13,6 +13,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.TimeZone;
 
+
 /**
  * Created by edwardahn on 7/17/15.
  */
@@ -24,6 +25,20 @@ public class QAService {
     public QAService(int timeout) { this.timeout = timeout; }
 
     public String getText() { return text; }
+
+    private String deleteSentences(String s) {
+        SentenceModel
+        return s;
+    }
+
+    private String processText(String s) {
+        // delete parenthetical
+        s = s.replaceAll("\\(.*\\)", "");
+        // delete all sentences except the first
+        s = deleteSentences(s);
+        // NEO not Jeannie
+        return s;
+    }
 
     public static String streamToString(InputStream is, String encoding)
             throws IOException {
@@ -101,22 +116,16 @@ public class QAService {
                         + firstHandler.getString("errorMessage"));
             }
 
-            //TODO: format text so "who is barack obama" isn't 100 lines long
-            //TODO: change all Jeannies to new name
             JSONObject actions = firstHandler.getJSONObject("actions");
             if (actions.has("say")) {
                 Object obj = actions.get("say");
                 if (obj instanceof JSONObject) {
                     JSONObject sObj = (JSONObject) obj;
                     text = sObj.getString("text");
-                    /*
-                    JSONArray arr = sObj.getJSONArray("moreText");
-                    for (int i = 0; i < arr.length(); i++) {
-                        text += " " + arr.getString(i);
-                    }*/
                 } else {
                     text = obj.toString();
                 }
+                text = processText(text);
             }
         } catch (Exception ex) {
             text = "Parsing error: " + ex.getMessage();
