@@ -1,5 +1,6 @@
 package com.example.edwardahn.assistant;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -14,6 +15,8 @@ import java.net.URLEncoder;
 import java.util.TimeZone;
 
 import opennlp.tools.sentdetect.SentenceDetector;
+import opennlp.tools.sentdetect.SentenceDetectorME;
+import opennlp.tools.sentdetect.SentenceModel;
 
 
 /**
@@ -23,21 +26,43 @@ public class QAService {
 
     protected int timeout = 10000;
     public String text;
+    private Context context;
 
-    public QAService(int timeout) { this.timeout = timeout; }
+    public QAService(Context ctx, int timeout) {
+        this.timeout = timeout;
+        this.context = ctx;
+    }
 
     public String getText() { return text; }
 
     private String deleteSentences(String s) {
-        //
-        return s;
+        SentenceDetector detector = null;
+        InputStream modelIn = null;
+
+        try {
+            modelIn = context.getResources().openRawResource(R.raw.sent);
+            final SentenceModel sentenceModel = new SentenceModel(modelIn);
+            modelIn.close();
+            detector = new SentenceDetectorME(sentenceModel);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (modelIn != null) {
+                try {
+                    modelIn.close();
+                } catch (final IOException ioe) {}
+            }
+        }
+
+        String sentences[] = detector.sentDetect(s);
+        return sentences[0];
     }
 
     private String processText(String s) {
-        // delete parenthetical
-        s = s.replaceAll("\\(.*\\)", "");
         // delete all sentences except the first
         s = deleteSentences(s);
+        // delete parenthetical
+        s = s.replaceAll("\\(.*?\\)", "");
         // NEO not Jeannie
         return s;
     }

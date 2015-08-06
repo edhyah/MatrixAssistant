@@ -1,5 +1,6 @@
 package com.example.edwardahn.assistant;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -40,7 +41,13 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
     // Array adapter for conversation thread
     public ArrayAdapter<String> mConversationArrayAdapter;
 
-    private QAService qa = new QAService(10000);
+    private QAService qa = null;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        qa = new QAService(activity.getApplicationContext(), 10000);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
