@@ -37,6 +37,7 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
     private ListView mConversationView;
     private EditText mOutEditText;
     private ImageButton mSendButton;
+    private TextView mQueryView;
 
     // Array adapter for conversation thread
     public ArrayAdapter<String> mConversationArrayAdapter;
@@ -82,9 +83,10 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mConversationView = (ListView) view.findViewById(R.id.in);
+        //mConversationView = (ListView) view.findViewById(R.id.in);
         mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
         mSendButton = (ImageButton) view.findViewById(R.id.button_send);
+        mQueryView = (TextView) view.findViewById(R.id.query_in);
     }
 
     @Override
@@ -92,9 +94,9 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
         super.onStart();
 
         // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
+        //mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
-        mConversationView.setAdapter(mConversationArrayAdapter);
+        //mConversationView.setAdapter(mConversationArrayAdapter);
 
         // Initialize the compose field with a listener for the return key
         mOutEditText.setOnEditorActionListener(mWriteListener);
@@ -109,6 +111,8 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
                     String message = textView.getText().toString();
                     if (message.equals("")) return;
                     textView.setText("");
+                    TextView queryView = (TextView) view.findViewById(R.id.query_in);
+                    queryView.setText(message);
                     new QAThread(message).start();
                     //((MainActivity) getActivity()).sendMessage(label+message+label);
                 }
@@ -122,6 +126,7 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
             // If the action is a key-up event on the return key, send the message
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+                
                 String message = view.getText().toString();
                 ((MainActivity) getActivity()).sendMessage(label+message+label);
             }
@@ -143,7 +148,6 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
 
             qa.runQA(inputText, getLocation());
 
-            // TODO: solve this problem
             ((MainActivity) getActivity()).sendMessage(label+qa.getText()+label);
         }
     }

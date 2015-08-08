@@ -249,10 +249,11 @@ public class MainActivity extends ActionBarActivity {
                         myFragment.mConversationArrayAdapter.add(writeMessage.substring(
                                 Constants.CODE_LEN, writeMessage.length()-Constants.CODE_LEN));
                     } else if (currentFragment == CURRENT_QUERY) {
+                        /*
                         QueryFragment myFragment = (QueryFragment)getSupportFragmentManager().findFragmentByTag(
                                 "query");
                         myFragment.mConversationArrayAdapter.add(writeMessage.substring(
-                                Constants.CODE_LEN, writeMessage.length()-Constants.CODE_LEN));
+                                Constants.CODE_LEN, writeMessage.length()-Constants.CODE_LEN));*/
                     }
                     break;
                 case Constants.MESSAGE_READ:

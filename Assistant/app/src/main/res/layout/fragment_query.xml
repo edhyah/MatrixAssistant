@@ -4,6 +4,7 @@
     tools:context="com.example.edwardahn.assistant.QueryFragment"
     android:orientation="vertical">
 
+    <!--
     <ListView
         android:id="@+id/in"
         android:layout_width="match_parent"
@@ -11,6 +12,16 @@
         android:layout_weight="1"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
+        android:background="#E0E0E0"/>-->
+
+    <TextView
+        android:id="@+id/query_in"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:padding="50px"
         android:background="#E0E0E0"/>
 
     <LinearLayout
