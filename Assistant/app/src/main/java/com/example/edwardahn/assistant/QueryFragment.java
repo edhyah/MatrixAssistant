@@ -127,9 +127,6 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    //TODO: time displayed incorrectly, need to possibly flush buffer
-
-
     class QAThread extends Thread {
         String inputText;
 
@@ -157,6 +154,7 @@ public class QueryFragment extends Fragment implements View.OnClickListener {
                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
             location = l.getLatitude() + "," + l.getLongitude();
         } catch (Exception ex) {
+            Log.e("", ex.getMessage());
         }
         return location;
     }
