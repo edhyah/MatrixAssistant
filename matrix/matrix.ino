@@ -488,6 +488,7 @@ void drawStaticText(int *data) {
   int *ptr = data;
   int cRow = 0;
   int shift = 23; // align text to left-side of matrix
+  pos = 0;
   for (int row = 0; row < 8; row++) {
     // load info onto data array, one row at a time
     getData(ptr, row, shift);
