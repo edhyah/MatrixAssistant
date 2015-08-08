@@ -47,13 +47,20 @@ public class TimeFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
-                    mTextView.setText(time.format(new Date()));
-                    sendTime();
+                    String currentTime = time.format(new Date());
+                    if (currentTime.charAt(0) == '0')
+                        currentTime = ' ' + currentTime.substring(1);
+                    mTextView.setText(currentTime);
+                    sendTime(currentTime);
                 }
             }
         };
         getActivity().registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
         if ((MainActivity) getActivity() != null) sendTime();
+    }
+
+    public void sendTime(String currentTime) {
+        ((MainActivity) getActivity()).sendMessage(label+currentTime+label);
     }
 
     public void sendTime() {
