@@ -120,6 +120,20 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Service methods
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        // delete service
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // intent for service
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -128,7 +142,10 @@ public class MainActivity extends ActionBarActivity {
         }
         // Unregister broadcast listeners
         unregisterReceiver(mReceiver);
+        // Unbind service
     }
+
+    // Service methods above
 
     @Override
     public void onResume() {
