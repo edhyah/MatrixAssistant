@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -19,6 +20,20 @@ public class TimeUpdateService extends Service {
     private static final String TAG = "TimeUpdateService";
     private BroadcastReceiver mReceiver = null;
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
+    private final IBinder mBinder = new LocalBinder();
+    private ServiceCallbacks serviceCallbacks;
+
+    public class LocalBinder extends Binder {
+        TimeUpdateService getService() { return TimeUpdateService.this; }
+    }
+
+    public interface ServiceCallbacks {
+        void sendTime();
+    }
+
+    public void setCallbacks(ServiceCallbacks callbacks) {
+        serviceCallbacks = callbacks;
+    }
 
     @Override
     public void onCreate() {
@@ -29,26 +44,27 @@ public class TimeUpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
 
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
-                    /*
-                    String currentTime = time.format(new Date());
-                    if (currentTime.charAt(0) == '0')
-                        currentTime = ' ' + currentTime.substring(1);
-                    sendTime(currentTime);*/
-                    // call sendmessage function in main activity
-                }
-            }
-        };
-        registerReceiver(mReceiver,new IntentFilter(Intent.ACTION_TIME_TICK));
+
 
         return START_STICKY;
     }
 
     @Override
-    public IBinder onBind(Intent intent) { return null; }
+    public IBinder onBind(Intent intent) {
+
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
+                    if (serviceCallbacks != null) serviceCallbacks.sendTime();
+                }
+            }
+        };
+
+        registerReceiver(mReceiver,new IntentFilter(Intent.ACTION_TIME_TICK));
+
+        return mBinder;
+    }
 
     @Override
     public void onDestroy() {

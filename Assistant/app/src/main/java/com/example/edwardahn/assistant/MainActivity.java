@@ -2,11 +2,14 @@ package com.example.edwardahn.assistant;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,8 +23,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends ActionBarActivity implements TimeUpdateService.ServiceCallbacks {
 
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -41,6 +47,11 @@ public class MainActivity extends ActionBarActivity {
     private static final int CURRENT_ECHO = 1;
     private static final int CURRENT_QUERY = 2;
     private static int currentFragment = CURRENT_TIME;
+
+    // Service
+    private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
+    private TimeUpdateService mService;
+    private boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,15 +136,18 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onRestart() {
         super.onRestart();
-        Intent intent = new Intent(this, TimeUpdateService.class);
-        stopService(intent);
+        if (mBound) {
+            mService.setCallbacks(null); // unregister
+            unbindService(serviceConnection);
+            mBound = false;
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Intent intent = new Intent(this, TimeUpdateService.class);
-        startService(intent);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -144,10 +158,41 @@ public class MainActivity extends ActionBarActivity {
         }
         // Unregister broadcast listeners
         unregisterReceiver(mReceiver);
-        // Stop service
-        Intent intent = new Intent(this, TimeUpdateService.class);
-        stopService(intent);
+        // Unbind service
+        if (mBound) {
+            mService.setCallbacks(null); // unregister
+            unbindService(serviceConnection);
+            mBound = false;
+        }
     }
+
+    // implements ServiceCallbacks interface
+    @Override
+    public void sendTime() {
+        String currentTime = time.format(new Date());
+        if (currentTime.charAt(0) == '0')
+            currentTime = ' ' + currentTime.substring(1);
+        sendMessage(TimeFragment.label + currentTime + TimeFragment.label);
+    }
+
+    /** Callbacks for service binding, passed to bindService() */
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // cast the IBinder and get MyService instance
+            TimeUpdateService.LocalBinder binder = (TimeUpdateService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.setCallbacks(MainActivity.this); // register
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 
     // Service methods above
 
