@@ -125,13 +125,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onRestart() {
         super.onRestart();
-        // delete service
+        Intent intent = new Intent(this, TimeUpdateService.class);
+        stopService(intent);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        // intent for service
+        Intent intent = new Intent(this, TimeUpdateService.class);
+        startService(intent);
     }
 
     @Override
@@ -142,7 +144,9 @@ public class MainActivity extends ActionBarActivity {
         }
         // Unregister broadcast listeners
         unregisterReceiver(mReceiver);
-        // Unbind service
+        // Stop service
+        Intent intent = new Intent(this, TimeUpdateService.class);
+        stopService(intent);
     }
 
     // Service methods above
