@@ -146,6 +146,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     @Override
     public void onStop() {
         super.onStop();
+        sendTime();
         Intent intent = new Intent(this, TimeUpdateService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }

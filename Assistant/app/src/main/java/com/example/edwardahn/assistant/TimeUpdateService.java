@@ -43,9 +43,6 @@ public class TimeUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-
-
-
         return START_STICKY;
     }
 
