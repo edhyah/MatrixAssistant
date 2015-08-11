@@ -1,6 +1,8 @@
 package com.example.edwardahn.assistant;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -52,6 +54,9 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
     private TimeUpdateService mService;
     private boolean mBound = false;
+
+    // Alarm Receiver
+    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,36 +140,52 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
 
     @Override
     public void onRestart() {
+        Log.i("","main restarted");
         super.onRestart();
+        /*
         if (mBound) {
             mService.setCallbacks(null); // unregister
             unbindService(serviceConnection);
             mBound = false;
         }
+        */
+        //TODO: see ondestory
     }
 
     @Override
     public void onStop() {
         super.onStop();
         sendTime();
+        /*
+        Log.i("","time service created at onStop");
         Intent intent = new Intent(this, TimeUpdateService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        */
+        //TODO: alarm manager here
+
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+        int interval = 
     }
 
     @Override
     public void onDestroy() {
+        Log.i("","main activity destroyed");
         super.onDestroy();
         if (mBluetoothService != null) {
             mBluetoothService.stop();
         }
         // Unregister broadcast listeners
         unregisterReceiver(mReceiver);
+        /*
         // Unbind service
         if (mBound) {
             mService.setCallbacks(null); // unregister
             unbindService(serviceConnection);
             mBound = false;
-        }
+        }*/
+        //TODO: disable alarm http://stackoverflow.com/questions/23868439/how-to-turn-off-alarm-programmatically-in-android
     }
 
     // implements ServiceCallbacks interface
