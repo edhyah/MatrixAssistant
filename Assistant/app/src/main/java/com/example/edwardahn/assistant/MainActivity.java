@@ -57,6 +57,8 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
 
     // Alarm Receiver
     private PendingIntent pendingIntent;
+    public AlarmManager alarmManager;
+    private TimeUpdateReceiver timeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +152,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         }
         */
         //TODO: see ondestory
+        alarmManager.cancel(pendingIntent);
     }
 
     @Override
@@ -163,10 +166,14 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         */
         //TODO: alarm manager here
 
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
-        int interval = 
+        long next = System.currentTimeMillis() + 60000; // 60000 millis == 1 minute
+        long nextMinAtZero = next - (next % 60000);
+        // set callbacks
+        mBound = true;
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextMinAtZero, pendingIntent);
     }
 
     @Override
@@ -186,6 +193,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
             mBound = false;
         }*/
         //TODO: disable alarm http://stackoverflow.com/questions/23868439/how-to-turn-off-alarm-programmatically-in-android
+        alarmManager.cancel(pendingIntent);
     }
 
     // implements ServiceCallbacks interface
@@ -198,6 +206,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     }
 
     /** Callbacks for service binding, passed to bindService() */
+    /*
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
@@ -214,7 +223,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;
         }
-    };
+    };*/
 
     // Service methods above
 

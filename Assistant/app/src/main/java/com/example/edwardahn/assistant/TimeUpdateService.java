@@ -18,6 +18,8 @@ import java.util.Date;
  */
 public class TimeUpdateService extends Service {
 
+    //TODO keep service and implement alarmmanager inside of it!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     private static final String TAG = "TimeUpdateService";
     private BroadcastReceiver mReceiver = null;
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
