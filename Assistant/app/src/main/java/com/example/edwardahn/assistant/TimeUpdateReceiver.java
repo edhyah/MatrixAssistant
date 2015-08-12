@@ -5,28 +5,28 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * Created by edwardahn on 8/11/15.
  */
 public class TimeUpdateReceiver extends BroadcastReceiver {
 
-    private ReceiverCallbacks receiverCallbacks;
+    //private AlarmManager mAlarmManager;
 
+    private static final String TAG = "TimeUpdateReceiver";
+
+    /*
     private void scheduleNextAlarm(Context context) {
+        Intent intent = new Intent(this, TimeUpdateReceiver.class);
         return;
-    }
+    }*/
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        scheduleNextAlarm(context);
+        Log.i(TAG, "Alarm Receieved");
+        ((MainActivity) context).scheduleNextAlarm();
+        ((MainActivity) context).sendTime();
     }
 
-    public interface ReceiverCallbacks {
-        void sendTime();
-    }
-
-    public void setCallbacks(ReceiverCallbacks callbacks) {
-        receiverCallbacks = callbacks;
-    }
 }

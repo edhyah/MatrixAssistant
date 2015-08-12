@@ -36,7 +36,8 @@
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
-        <service android:name=".TimeUpdateService" />
+        <!--<service android:name=".TimeUpdateService" />-->
+        <receiver android:name=".TimeUpdateReceiver" />
 
     </application>
 

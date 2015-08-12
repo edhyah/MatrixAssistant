@@ -50,15 +50,20 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     private static final int CURRENT_QUERY = 2;
     private static int currentFragment = CURRENT_TIME;
 
-    // Service
+
+    // for Alarm receiver and service
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
+
+    // Service
+    /*
+
     private TimeUpdateService mService;
-    private boolean mBound = false;
+    private boolean mBound = false;*/
 
     // Alarm Receiver
-    private PendingIntent pendingIntent;
-    public AlarmManager alarmManager;
-    private TimeUpdateReceiver timeReceiver;
+    private PendingIntent mPendingIntent;
+    public AlarmManager mAlarmManager;
+    //private TimeUpdateReceiver timeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +145,13 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
 
     // Service methods
 
+    public void scheduleNextAlarm() {
+        Log.i("", "next alarm scheduled");
+        long next = System.currentTimeMillis() + 60000; // 60000 millis == 1 minute
+        long nextMinAtZero = next - (next % 60000);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, nextMinAtZero, mPendingIntent);
+    }
+
     @Override
     public void onRestart() {
         Log.i("","main restarted");
@@ -152,7 +164,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         }
         */
         //TODO: see ondestory
-        alarmManager.cancel(pendingIntent);
+        mAlarmManager.cancel(mPendingIntent);
     }
 
     @Override
@@ -166,14 +178,13 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         */
         //TODO: alarm manager here
 
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+        mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         long next = System.currentTimeMillis() + 60000; // 60000 millis == 1 minute
         long nextMinAtZero = next - (next % 60000);
-        // set callbacks
-        mBound = true;
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextMinAtZero, pendingIntent);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, nextMinAtZero, mPendingIntent);
+        //mBound = true;
     }
 
     @Override
@@ -193,7 +204,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
             mBound = false;
         }*/
         //TODO: disable alarm http://stackoverflow.com/questions/23868439/how-to-turn-off-alarm-programmatically-in-android
-        alarmManager.cancel(pendingIntent);
+        mAlarmManager.cancel(mPendingIntent);
     }
 
     // implements ServiceCallbacks interface
