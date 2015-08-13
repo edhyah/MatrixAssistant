@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class MainActivity extends ActionBarActivity implements TimeUpdateService.ServiceCallbacks {
+public class MainActivity extends ActionBarActivity {
 
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -54,17 +54,10 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     // for Alarm receiver and service
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
 
-    // Service
-    /*
-
-    private TimeUpdateService mService;
-    private boolean mBound = false;*/
-
     // Alarm Receiver
     private PendingIntent mPendingIntent;
     public AlarmManager mAlarmManager;
     public static MainActivity instance = null;
-    //private TimeUpdateReceiver timeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +65,6 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // for alarm manager
         instance = this;
 
         // Set the Action Bar to use tabs for navigation
@@ -221,35 +213,12 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     }
 
     // implements ServiceCallbacks interface
-    @Override
     public void sendTime() {
         String currentTime = time.format(new Date());
         if (currentTime.charAt(0) == '0')
             currentTime = ' ' + currentTime.substring(1);
         sendMessage(TimeFragment.label + currentTime + TimeFragment.label);
     }
-
-    /** Callbacks for service binding, passed to bindService() */
-    /*
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // cast the IBinder and get MyService instance
-            TimeUpdateService.LocalBinder binder = (TimeUpdateService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            mService.setCallbacks(MainActivity.this); // register
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };*/
-
-    // Service methods above
 
     @Override
     public void onResume() {
