@@ -63,6 +63,7 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
     // Alarm Receiver
     private PendingIntent mPendingIntent;
     public AlarmManager mAlarmManager;
+    public static MainActivity instance = null;
     //private TimeUpdateReceiver timeReceiver;
 
     @Override
@@ -70,6 +71,9 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // for alarm manager
+        instance = this;
 
         // Set the Action Bar to use tabs for navigation
         ActionBar ab = getSupportActionBar();
@@ -147,6 +151,9 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
 
     public void scheduleNextAlarm() {
         Log.i("", "next alarm scheduled");
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
+        mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         long next = System.currentTimeMillis() + 60000; // 60000 millis == 1 minute
         long nextMinAtZero = next - (next % 60000);
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, nextMinAtZero, mPendingIntent);
@@ -164,6 +171,9 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
         }
         */
         //TODO: see ondestory
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
+        mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         mAlarmManager.cancel(mPendingIntent);
     }
 
@@ -204,6 +214,9 @@ public class MainActivity extends ActionBarActivity implements TimeUpdateService
             mBound = false;
         }*/
         //TODO: disable alarm http://stackoverflow.com/questions/23868439/how-to-turn-off-alarm-programmatically-in-android
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
+        mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         mAlarmManager.cancel(mPendingIntent);
     }
 

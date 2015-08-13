@@ -37,7 +37,7 @@
             android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
         <!--<service android:name=".TimeUpdateService" />-->
-        <receiver android:name=".TimeUpdateReceiver" />
+        <receiver android:name="com.example.edwardahn.assistant.TimeUpdateReceiver" />
 
     </application>
 
