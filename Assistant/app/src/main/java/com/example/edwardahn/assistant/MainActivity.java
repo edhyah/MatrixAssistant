@@ -31,6 +31,8 @@ import java.util.Date;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final String TAG = "MainActivity";
+
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
 
@@ -50,11 +52,8 @@ public class MainActivity extends ActionBarActivity {
     private static final int CURRENT_QUERY = 2;
     private static int currentFragment = CURRENT_TIME;
 
-
     // for Alarm receiver and service
     private final SimpleDateFormat time = new SimpleDateFormat("hh:mm");
-
-    // Alarm Receiver
     private PendingIntent mPendingIntent;
     public AlarmManager mAlarmManager;
     public static MainActivity instance = null;
@@ -142,7 +141,6 @@ public class MainActivity extends ActionBarActivity {
     // Service methods
 
     public void scheduleNextAlarm() {
-        Log.i("", "next alarm scheduled");
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
         mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
@@ -153,16 +151,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onRestart() {
-        Log.i("","main restarted");
         super.onRestart();
-        /*
-        if (mBound) {
-            mService.setCallbacks(null); // unregister
-            unbindService(serviceConnection);
-            mBound = false;
-        }
-        */
-        //TODO: see ondestory
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
         mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
@@ -172,47 +161,30 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onStop() {
         super.onStop();
-        sendTime();
-        /*
-        Log.i("","time service created at onStop");
-        Intent intent = new Intent(this, TimeUpdateService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        */
-        //TODO: alarm manager here
-
+        if (getCurrentFragment() != CURRENT_TIME) sendTime();
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
         mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         long next = System.currentTimeMillis() + 60000; // 60000 millis == 1 minute
         long nextMinAtZero = next - (next % 60000);
         mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, nextMinAtZero, mPendingIntent);
-        //mBound = true;
     }
 
     @Override
     public void onDestroy() {
-        Log.i("","main activity destroyed");
         super.onDestroy();
         if (mBluetoothService != null) {
             mBluetoothService.stop();
         }
         // Unregister broadcast listeners
         unregisterReceiver(mReceiver);
-        /*
-        // Unbind service
-        if (mBound) {
-            mService.setCallbacks(null); // unregister
-            unbindService(serviceConnection);
-            mBound = false;
-        }*/
-        //TODO: disable alarm http://stackoverflow.com/questions/23868439/how-to-turn-off-alarm-programmatically-in-android
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, TimeUpdateReceiver.class);
         mPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         mAlarmManager.cancel(mPendingIntent);
     }
 
-    // implements ServiceCallbacks interface
+    // for alarm service
     public void sendTime() {
         String currentTime = time.format(new Date());
         if (currentTime.charAt(0) == '0')

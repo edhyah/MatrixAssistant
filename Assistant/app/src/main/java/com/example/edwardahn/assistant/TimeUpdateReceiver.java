@@ -16,9 +16,10 @@ public class TimeUpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Alarm Receieved");
+        Log.i(TAG, "Alarm received");
         MainActivity instance = MainActivity.instance;
         instance.scheduleNextAlarm();
+        Log.i(TAG, "Next alarm scheduled");
         instance.sendTime();
     }
 
