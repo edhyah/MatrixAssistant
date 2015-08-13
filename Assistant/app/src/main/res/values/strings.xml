@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_connect">Connect</string>
 
-    <string name="title_activity_device_list">Devices</string>
+    <string name="title_activity_device_list">Available Devices</string>
 
     <!-- MainActivity -->
     <string name="not_connected">You are not connected to a device</string>
