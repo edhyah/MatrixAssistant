@@ -22,11 +22,11 @@ The user can input any queries into the text field of the query tab, either thro
 
 Neo works from the interaction of two components: a **24x8 LED matrix** and an **Android application**. In general, the Android application sends strings for the LED matrix to display.
 
-#### 24x8 LED Matrix
+##### 24x8 LED Matrix
 
 The LED matrix is composed of 192 blue diffused LEDs that are controlled by shift registers. These shift registers receive data to display from an Arduino Uno. The core of the Arduino code is the displayText function, that takes in a string to display and a boolean that decides whether the text should remain static or scroll across the matrix from left to right. Strings are received serially via a Bluetooth connection with the Android application.
 
-#### Android Application
+##### Android Application
 
 The Android application builds a minimalist user interface that a user can operate to send data to the LED matrix. It consists of three tabs: Time, Echo and Query.
 
@@ -42,7 +42,7 @@ In the echo tab, the user inputs text through a keyboard or by voice. Google's v
 
 In this tab, the user can input any queries into the text field, either through a keyboard or by voice. Like the Echo tab, Google's speech recognition service is used to convert voice into text. After pressing the question mark, the Android application computes the answer to this query. This is done in two steps: (1) obtain an answer through a question-answering API and (2) simplify the answer through a natural language processing API. The result is sent to the LED matrix to be displayed.
 
-#### External APIs Used
+##### External APIs Used
 - Voice-Actions API to compute queries
 - OpenNLP API to process/simplify answers from the QA service
 - Google SpeechRecognizer API to convert voice into text
