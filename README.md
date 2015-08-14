@@ -1,5 +1,7 @@
 # Neo
 
+###### *a personal assistant for Android that talks through a mobile, homemade LED signboard*
+
 Neo is a **smart, interactive, Arduino-powered LED matrix** that serves as a **visual personal assistant** for anyone who uses a modern **Android phone**. Through his Bluetooth connection with an Android application, he can display the current time digitally or echo any text sent to him through the app. Neo's best feature, however, is his ability to answer any question that you ask him, just like Apple's Siri or Microsoft's Cortana.
 
 ## Detailed Description
