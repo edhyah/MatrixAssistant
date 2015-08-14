@@ -1,10 +1,14 @@
 # Neo
 
-**_Neo_ is a smart, interactive, Arduino-powered LED matrix** that serves as a **visual personal assistant** for an **Android** phone user. Through his Bluetooth connection with an Android application, he can display the current time digitally or echo any text sent to him through the app. Neo's best feature, however, is his ability to answer any question that you ask him, just like Apple's Siri or Microsoft's Cortana.
+Neo is a **smart, interactive, Arduino-powered LED matrix** that serves as a **visual personal assistant** for anyone who uses a modern **Android phone**. Through his Bluetooth connection with an Android application, he can display the current time digitally or echo any text sent to him through the app. Neo's best feature, however, is his ability to answer any question that you ask him, just like Apple's Siri or Microsoft's Cortana.
 
 ## Detailed Description
 
-After connecting Neo with the Android application available inside the Assistant folder of this repository, Neo will display the current local time like a digital clock. Neo will do this as long as the Bluetooth connection is maintained. Inside the app, the user can also make Neo do the following:
+After connecting Neo with the Android application available inside the Assistant folder of this repository, Neo can:
+
+##### Display Current Time
+
+Neo will display the current local time digitally if the user is on the Time tab. The current time will also be displayed if the user is not currently on the app, as long as the app is running in the background of the Android device with a maintained Bluetooth connection to Neo.
 
 ##### Echo Text
 
@@ -12,7 +16,7 @@ In the echo tab, the user can input text into the text field, either through a k
 
 ##### Answer Queries
 
-In this tab, the user can input any queries into the text field, either through a keyboard or by voice. Neo will answer this query visually after the question mark button is pressed.
+The user can input any queries into the text field of the query tab, either through a keyboard or by voice. Neo will answer this query visually after the question mark button is pressed.
 
 ## How does Neo work?
 
